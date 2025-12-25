@@ -1,9 +1,17 @@
 from pathlib import Path
 from fasthtml.common import *
 
-app, rt = fast_app()
+app, rt = fast_app(
+    hdrs=(
+        Style("""
+            * {
+                font-family: 'Courier New', Courier, monospace;
+            }
+        """),
+    )
+)
 
-
+######################################################################################
 ### Helpers
 ######################################################################################
 def get_artist_cover(artist_name):
@@ -32,6 +40,30 @@ def get_artist_tracks(artist_name):
         return []
     return [f.name for f in artist_dir.glob("*.mp3")]
 
+def get_posts():
+    notes_dir = Path("static/notes")
+    if not notes_dir.exists():
+        return []
+    posts = []
+    for post_dir in sorted(notes_dir.iterdir(), reverse=True):
+        if post_dir.is_dir():
+            meta_file = post_dir / "meta.txt"
+            if meta_file.exists():
+                lines = meta_file.read_text().strip().split('\n')
+                posts.append({
+                    'id': post_dir.name,
+                    'title': lines[0] if len(lines) > 0 else post_dir.name,
+                    'date': lines[1] if len(lines) > 1 else '',
+                    'excerpt': lines[2] if len(lines) > 2 else ''
+                })
+    return posts
+
+def get_post_content(post_id):
+    content_file = Path(f"static/notes/{post_id}/content.txt")
+    if content_file.exists():
+        return content_file.read_text()
+    return "No hay contenido disponible."
+
 def NavBar(current_page="home"):
     def nav_link(text, href, page_name):
         is_active = current_page == page_name
@@ -46,16 +78,16 @@ def NavBar(current_page="home"):
             # Logo on the left
             A(
                 Img(src="/static/munra.jpg", alt="Munra Logo", 
-                    style="height: 150px; max-width: 150%; width: auto; display: block;"),
+                    style="height: 270px; max-width: 250%; width: auto; display: block;"),
                 href="/"),
             
             # Links below the logo
             Div(
                 A("home", href="/", 
                 style=f"color: black; font-size: 24px; text-decoration: none; {'text-decoration: underline;' if current_page == 'home' else ''}"),
-                nav_link("artists", "/artists", "artists"),
-                nav_link("notes", "/notes", "notes"),
-                nav_link("contact", "/contact", "contact"),
+                nav_link("notas", "/notes", "notes"),
+                nav_link("artistas", "/artists", "artists"),
+                nav_link("contacto", "/contact", "contact"),
                 style="display: flex; margin-top: 20px;"),
             
             style="display: flex; flex-direction: column; padding: 20px; width: 100%;"),
@@ -108,16 +140,16 @@ def get():
                     alt=artist,
                     style="width: 100%; height: 250px; object-fit: cover; margin-bottom: 10px;") 
                     if get_artist_cover(artist) else Div(style="height: 250px; background-color: #ddd; margin-bottom: 10px;"),
-                P(artist, style="margin: 0; color: white;"),
+                P(artist, style="margin: 0; color: black;"),
                 href=f"/artists/{artist}", 
                 style="text-decoration: none;"
             ),
             style=
-                "border: 2px solid black; "
+                "border: 1px solid black; "
                 "border-radius: 1px; "
                 "pointer: hover; "
                 "padding: 20px; "
-                "background-color: #333;"
+                "background-color: white;"
                 "margin: 10px; "
                 "width: 300px; "
                 "text-align: center; "
@@ -137,8 +169,45 @@ def get():
 
 @rt("/notes")
 def get():
+    posts = get_posts()
+    
+    post_list = [
+        Div(
+            A(
+                H2(post['title'], style="margin: 0 0 10px 0; color: black;"),
+                P(post['date'], style="font-size: 14px; color: #666; margin: 0 0 10px 0;"),
+                P(post['excerpt'], style="margin: 0; color: #333;"),
+                href=f"/notes/{post['id']}",
+                style="text-decoration: none;"
+            ),
+            style="padding: 20px; margin-bottom: 20px; background-color: white; cursor: pointer;"
+        )
+        for post in posts
+    ]
+    
     return Title("munra.cl"), NavBar("notes"), Page(
-        P("Notas sobre música, procesos y más."),
+        Div(*post_list) if post_list else P("No hay posts todavía."),
+        PageFooter()
+    )
+
+@rt("/notes/{post_id}")
+def get(post_id: str):
+    posts = get_posts()
+    post = next((p for p in posts if p['id'] == post_id), None)
+    
+    if not post:
+        return Title("Post no encontrado"), NavBar("notes"), Page(
+            P("Post no encontrado."),
+            PageFooter()
+        )
+    
+    content = get_post_content(post_id)
+    
+    return Title(f"{post['title']} - munra.cl"), NavBar("notes"), Page(
+        A("← volver a notes", href="/notes", style="color: black; text-decoration: none; display: inline-block; margin-bottom: 20px;"),
+        H1(post['title']),
+        P(post['date'], style="color: #666; font-size: 14px; margin-bottom: 30px;"),
+        P(content, style="line-height: 1.8; white-space: pre-wrap;"),
         PageFooter()
     )
 
