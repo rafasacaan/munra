@@ -3,9 +3,40 @@ from fasthtml.common import *
 
 app, rt = fast_app(
     hdrs=(
+        Script(src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"),
         Style("""
             * {
-                font-family: 'Courier New', Courier, monospace;
+                font-family: monospace;
+            }
+            .highlight-munra {
+                background: linear-gradient(to right, 
+                    rgba(255, 110, 199, 0.7) 0%, 
+                    rgba(255, 110, 199, 0.85) 30%,
+                    rgba(255, 110, 199, 0.75) 60%, 
+                    rgba(255, 110, 199, 0.7) 100%);
+                padding: 2px 4px;
+                border-radius: 45% 12% 38% 18% / 25% 42% 15% 35%;
+                display: inline-block;
+                transform: rotate(-1.2deg) skewX(-0.8deg);
+                box-shadow: 0 1px 3px rgba(255, 110, 199, 0.4);
+                font-style: italic;
+            }
+            .munra-card {
+                padding: 20px;
+                background-color: white;
+                margin: 10px;
+                width: 300px;
+                text-align: center;
+                position: relative;
+                transform: rotate(-0.6deg);
+            }
+            .munra-card-border {
+                position: absolute;
+                top: -5px;
+                left: -5px;
+                width: calc(100% + 10px);
+                height: calc(100% + 10px);
+                pointer-events: none;
             }
         """),
     )
@@ -14,31 +45,31 @@ app, rt = fast_app(
 ######################################################################################
 ### Helpers
 ######################################################################################
-def get_artist_cover(artist_name):
+def get_munra_cover(munra_name):
     # Try different image extensions
     for ext in ['jpg', 'jpeg', 'png', 'webp']:
-        cover_path = Path(f"static/artists/{artist_name}/cover.{ext}")
+        cover_path = Path(f"static/munras/{munra_name}/cover.{ext}")
         if cover_path.exists():
-            return f"/static/artists/{artist_name}/cover.{ext}"
+            return f"/static/munras/{munra_name}/cover.{ext}"
     return None  # No cover found
 
-def get_artists():
-    artists_dir = Path("static/artists")
-    if not artists_dir.exists():
+def get_munras():
+    munras_dir = Path("static/munras")
+    if not munras_dir.exists():
         return []
-    return [d.name for d in artists_dir.iterdir() if d.is_dir()]
+    return [d.name for d in munras_dir.iterdir() if d.is_dir()]
 
-def get_artist_info(artist_name):
-    info_file = Path(f"static/artists/{artist_name}/info.txt")
+def get_munra_info(munra_name):
+    info_file = Path(f"static/munras/{munra_name}/info.txt")
     if info_file.exists():
         return info_file.read_text()
     return "No hay información disponible."
 
-def get_artist_tracks(artist_name):
-    artist_dir = Path(f"static/artists/{artist_name}")
-    if not artist_dir.exists():
+def get_munra_tracks(munra_name):
+    munra_dir = Path(f"static/munras/{munra_name}")
+    if not munra_dir.exists():
         return []
-    return [f.name for f in artist_dir.glob("*.mp3")]
+    return [f.name for f in munra_dir.glob("*.mp3")]
 
 def get_posts():
     notes_dir = Path("static/notes")
@@ -67,26 +98,24 @@ def get_post_content(post_id):
 def NavBar(current_page="home"):
     def nav_link(text, href, page_name):
         is_active = current_page == page_name
-        style = (
-            "color: black; font-size: 24px; text-decoration: none; margin-left: 100px; "
-            + ("text-decoration: underline;" if is_active else "")
-        )
-        return A(text, href=href, style=style)
+        style = "color: black; font-size: 20px; text-decoration: none; margin-left: 100px; position: relative; display: inline-block;"
+        cls = "nav-link-active" if is_active else ""
+        return A(text, href=href, style=style, cls=cls)
     
     return Nav(
         Div(
             # Logo on the left
             A(
                 Img(src="/static/munra.jpg", alt="Munra Logo", 
-                    style="height: 270px; max-width: 250%; width: auto; display: block;"),
+                    style="width: 20%; max-width: 50%; display: block;"),
                 href="/"),
             
             # Links below the logo
             Div(
-                A("home", href="/", 
-                style=f"color: black; font-size: 24px; text-decoration: none; {'text-decoration: underline;' if current_page == 'home' else ''}"),
-                nav_link("notas", "/notes", "notes"),
-                nav_link("artistas", "/artists", "artists"),
+                A("munras", href="/", 
+                style="color: black; font-size: 20px; text-decoration: none; position: relative; display: inline-block;",
+                cls="nav-link-active" if current_page == 'munras' else ""),
+                nav_link("qué es", "/que-es", "que-es"),
                 nav_link("contacto", "/contact", "contact"),
                 style="display: flex; margin-top: 20px;"),
             
@@ -96,7 +125,7 @@ def NavBar(current_page="home"):
 
 def PageFooter():
     return Div(
-        P("© 2024 Munra - Sello de música chileno"),
+        P("© 2026 Munra - Made in Chile."),
         style="font-size: 12px; position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 20px; border-top: 1px solid #ccc; background-color: white; margin: 0 5%;"
     )
 
@@ -104,67 +133,151 @@ def Page(*content):
     return Div(*content, style="margin: 2% 6%;")
 
 
+######################################################################################
 ### Routes
 ######################################################################################
 
 @rt("/")
 def get():
-    return Title("munra.cl"), NavBar(), Page(
+
+    munras = get_munras()
+    munra_cards = [
+        Div(
+            A(
+                Img(src=get_munra_cover(munra), 
+                    alt=munra,
+                    style="width: 100%; height: 250px; object-fit: cover; margin-bottom: 10px;") 
+                    if get_munra_cover(munra) else Div(style="height: 250px; background-color: #ddd; margin-bottom: 10px;"),
+                P(munra, style="margin: 0; color: black;"),
+                href=f"/munras/{munra}", 
+                style="text-decoration: none;"
+            ),
+            cls="munra-card"
+        )
+        for munra in munras
+    ]
+    
+    grid = Div(
+        *munra_cards,
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"
+    )
+    
+    return Title("munra.cl"), NavBar("munras"), Page(
+        P(
+            NotStr(
+                "Aquí encontrarás todos los <span class='highlight-munra'>munras</span>. <br>"
+                "Cada <span class='highlight-munra'>munra</span> es un extracto mínimo de contenido.<br>"
+            ),
+            style="font-size: 16px; margin-bottom: 30px; color: #333;"
+        ),
+        grid,
+        Script("""
+            document.addEventListener('DOMContentLoaded', function() {
+                // Draw card borders
+                const cards = document.querySelectorAll('.munra-card');
+                cards.forEach(card => {
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.classList.add('munra-card-border');
+                    card.appendChild(svg);
+                    
+                    const rc = rough.svg(svg);
+                    const width = card.offsetWidth + 10;
+                    const height = card.offsetHeight + 10;
+                    svg.setAttribute('width', width);
+                    svg.setAttribute('height', height);
+                    
+                    const rect = rc.rectangle(5, 5, width - 10, height - 10, {
+                        stroke: '#999',
+                        strokeWidth: 0.8,
+                        roughness: 1.8,
+                        bowing: 1.2,
+                        fill: 'none',
+                        disableMultiStroke: false,
+                        seed: Math.random() * 1000
+                    });
+                    svg.appendChild(rect);
+                });
+                
+                // Draw nav underlines
+                const activeLinks = document.querySelectorAll('.nav-link-active');
+                activeLinks.forEach(link => {
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.style.position = 'absolute';
+                    svg.style.bottom = '-5px';
+                    svg.style.left = '0';
+                    svg.style.width = '100%';
+                    svg.style.height = '10px';
+                    svg.style.pointerEvents = 'none';
+                    link.appendChild(svg);
+                    
+                    const rc = rough.svg(svg);
+                    const width = link.offsetWidth;
+                    svg.setAttribute('width', width);
+                    svg.setAttribute('height', 10);
+                    
+                    const line = rc.line(0, 3, width, 3, {
+                        stroke: '#000',
+                        strokeWidth: 1,
+                        roughness: 1.5,
+                        bowing: 0.5,
+                        seed: Math.random() * 1000
+                    });
+                    svg.appendChild(line);
+                });
+            });
+        """),
+        PageFooter()
+    )
+
+
+@rt("/que-es")
+def get():
+    return Title("munra.cl"), NavBar("que-es"), Page(
         P(
             NotStr(
             "<b>¿Qué es Munra?</b> <br>"
             "<br>"
-            "Munra es un sello de música chileno.<br>"
-            "Nos gusta enfocarnos en el proceso: <br>"
-            " - más en el <i>cómo</i>, y menos en el <i>qué</i>.<br>"
+            "Un <span class='highlight-munra'>munra</span> es un registro.<br>"
+            "Cada <span class='highlight-munra'>munra</span> es análogo: cinta, cassette, errores incluidos.<br>"
             "<br>"
-            "Todo parte desde algún instrumento análogo.<br>"
-            "Nuestras producciones son hechas a cassette.<br>"
+            "Importa el proceso más que el resultado.<br>"
+            "Sin prisa, sin filtros.<br>"
             "<br>"
-            "Cada pieza es única, hecha con dedicación y atención.<br>"
+            "Cada <span class='highlight-munra'>munra</span> se hace una vez y nunca es exactamente igual.<br>"
+            "Made with love from Chile.<br>"
             ),
         style="font-size: 16px; line-height: 1.6;"
         ),
+        Script("""
+            document.addEventListener('DOMContentLoaded', function() {
+                const activeLinks = document.querySelectorAll('.nav-link-active');
+                activeLinks.forEach(link => {
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.style.position = 'absolute';
+                    svg.style.bottom = '-5px';
+                    svg.style.left = '0';
+                    svg.style.width = '100%';
+                    svg.style.height = '10px';
+                    svg.style.pointerEvents = 'none';
+                    link.appendChild(svg);
+                    
+                    const rc = rough.svg(svg);
+                    const width = link.offsetWidth;
+                    svg.setAttribute('width', width);
+                    svg.setAttribute('height', 10);
+                    
+                    const line = rc.line(0, 3, width, 3, {
+                        stroke: '#000',
+                        strokeWidth: 1,
+                        roughness: 1.5,
+                        bowing: 0.5,
+                        seed: Math.random() * 1000
+                    });
+                    svg.appendChild(line);
+                });
+            });
+        """),
         PageFooter(),
-    )
-
-
-@rt("/artists")
-def get():
-
-    artists = get_artists()
-    artist_cards = [
-        Div(
-            A(
-                Img(src=get_artist_cover(artist), 
-                    alt=artist,
-                    style="width: 100%; height: 250px; object-fit: cover; margin-bottom: 10px;") 
-                    if get_artist_cover(artist) else Div(style="height: 250px; background-color: #ddd; margin-bottom: 10px;"),
-                P(artist, style="margin: 0; color: black;"),
-                href=f"/artists/{artist}", 
-                style="text-decoration: none;"
-            ),
-            style=
-                "border: 1px solid black; "
-                "border-radius: 1px; "
-                "pointer: hover; "
-                "padding: 20px; "
-                "background-color: white;"
-                "margin: 10px; "
-                "width: 300px; "
-                "text-align: center; "
-        )
-        for artist in artists
-    ]
-    
-    grid = Div(
-        *artist_cards,
-        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"
-    )
-    
-    return Title("munra.cl"), NavBar("artists"), Page(
-        grid,
-        PageFooter()
     )
 
 @rt("/notes")
@@ -214,18 +327,45 @@ def get(post_id: str):
 @rt("/contact")
 def get():
     return Title("munra.cl"), NavBar("contact"), Page(
-        P("Contáctanos en rafasacaan@gmail.com"),
-        PageFooter()
+        P("Escríbenos a rafasacaan@gmail.com"),        Script("""
+            document.addEventListener('DOMContentLoaded', function() {
+                const activeLinks = document.querySelectorAll('.nav-link-active');
+                activeLinks.forEach(link => {
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.style.position = 'absolute';
+                    svg.style.bottom = '-5px';
+                    svg.style.left = '0';
+                    svg.style.width = '100%';
+                    svg.style.height = '10px';
+                    svg.style.pointerEvents = 'none';
+                    link.appendChild(svg);
+                    
+                    const rc = rough.svg(svg);
+                    const width = link.offsetWidth;
+                    svg.setAttribute('width', width);
+                    svg.setAttribute('height', 10);
+                    
+                    const line = rc.line(0, 3, width, 3, {
+                        stroke: '#000',
+                        strokeWidth: 1,
+                        roughness: 1.5,
+                        bowing: 0.5,
+                        seed: Math.random() * 1000
+                    });
+                    svg.appendChild(line);
+                });
+            });
+        """),        PageFooter()
     )
 
-@rt("/artists/{artist_name}")
-def get(artist_name: str):
-    info = get_artist_info(artist_name)
-    tracks = get_artist_tracks(artist_name)
+@rt("/munras/{munra_name}")
+def get(munra_name: str):
+    info = get_munra_info(munra_name)
+    tracks = get_munra_tracks(munra_name)
     
-    # Left side - Artist info
+    # Left side - Munra info
     left_section = Div(
-        H1(artist_name),
+        H1(munra_name),
         P(info, style="line-height: 1.6; white-space: pre-wrap;"),
         style="padding: 20px; flex: 1;"
     )
@@ -235,11 +375,11 @@ def get(artist_name: str):
         Div(
             P(track, style="margin-bottom: 5px; font-size: 14px; color: black;"),
             Audio(
-                Source(src=f"/static/artists/{artist_name}/{track}", type="audio/mpeg"),
+                Source(src=f"/static/munras/{munra_name}/{track}", type="audio/mpeg"),
                 controls=True,
                 style="width: 100%; height: 30px;"
             ),
-            style="margin-bottom: 20px; padding: 15px; background-color: white; border: 3px solid black;"
+            style="margin-bottom: 20px; padding: 15px; background-color: white;"
         )
         for track in tracks
     ]
@@ -247,7 +387,8 @@ def get(artist_name: str):
     right_section = Div(
         H2("tracks"),
         *track_list,
-        style="padding: 20px; flex: 1; border-left: 1px solid #ccc;"
+        style="padding: 20px; flex: 1; position: relative;",
+        cls="munra-separator"
     )
     
     # Two column layout
@@ -257,8 +398,36 @@ def get(artist_name: str):
         style="display: flex; gap: 20px;"
     )
     
-    return Title(f"{artist_name} - munra.cl"), NavBar("artists"), Page(
+    return Title(f"{munra_name} - munra.cl"), NavBar("munras"), Page(
         content,
+        Script("""
+            document.addEventListener('DOMContentLoaded', function() {
+                const separator = document.querySelector('.munra-separator');
+                if (separator) {
+                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                    svg.style.position = 'absolute';
+                    svg.style.left = '0';
+                    svg.style.top = '0';
+                    svg.style.height = '100%';
+                    svg.style.width = '20px';
+                    svg.style.pointerEvents = 'none';
+                    separator.appendChild(svg);
+                    
+                    const rc = rough.svg(svg);
+                    svg.setAttribute('width', 20);
+                    svg.setAttribute('height', separator.offsetHeight);
+                    
+                    const line = rc.line(5, 0, 5, separator.offsetHeight, {
+                        stroke: '#999',
+                        strokeWidth: 0.8,
+                        roughness: 1.8,
+                        bowing: 1.2,
+                        seed: Math.random() * 1000
+                    });
+                    svg.appendChild(line);
+                }
+            });
+        """),
         PageFooter()
     )
 
