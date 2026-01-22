@@ -7,7 +7,7 @@ DEBUG = True
 
 # Site metadata
 SITE_NAME = "munra.cl"
-SITE_DESCRIPTION = "Colección de notas y registros creados por un humano que respira y transpira. Acto de resistencia a algo."
+SITE_DESCRIPTION = "Somos un estudio de grabación musical. Creamos registros de forma artesanal y rudimentaria. Munra es un acto de resistencia a lo sofisticado, persiguiendo capturar al humano detrás que respira y transpira."
 SITE_URL = "https://munra.cl"
 CONTACT_EMAIL = "xxxxx@xxx.com"
 
@@ -41,3 +41,7 @@ PICSUM_BASE_URL = "https://picsum.photos"
 STATIC_NOTES_PATH = "static/notes"
 STATIC_MUNRAS_PATH = "static/munras"
 LOGO_PATH = "/static/munra.jpg"
+FAVICON_PATH = "/static/munra.jpg"
+
+# Analytics
+GOOGLE_ANALYTICS_ID = "G-5WWLZXKEX0"

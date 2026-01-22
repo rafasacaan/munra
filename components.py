@@ -28,7 +28,7 @@ def NavBar(current_page="home", vertical=False):
                 style="margin-bottom: 50px;"
             ),
             Div(
-                nav_link("home", "/", "home"),
+                nav_link("grabaciones", "/", "home"),
                 nav_link("máquinas", "/maquinas", "máquinas"),
                 nav_link("contacto", "/contact", "contact"),
                 cls="nav-links"

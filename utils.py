@@ -1,7 +1,7 @@
 """Utilities for SEO and meta tags"""
 
 from fasthtml.common import *
-from config import SITE_NAME, SITE_DESCRIPTION, SITE_URL
+from config import SITE_NAME, SITE_DESCRIPTION, SITE_URL, GOOGLE_ANALYTICS_ID
 
 
 def get_meta_tags(title=None, description=None, image=None, url=None):
@@ -36,4 +36,20 @@ def get_meta_tags(title=None, description=None, image=None, url=None):
         Meta(name="twitter:title", content=page_title),
         Meta(name="twitter:description", content=page_description),
         Meta(name="twitter:image", content=page_image),
+    ]
+
+
+def get_google_analytics():
+    """Generate Google Analytics script if ID is configured"""
+    if not GOOGLE_ANALYTICS_ID:
+        return []
+    
+    return [
+        Script(src=f"https://www.googletagmanager.com/gtag/js?id={GOOGLE_ANALYTICS_ID}", async_=True),
+        Script(f"""
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){{dataLayer.push(arguments);}}
+            gtag('js', new Date());
+            gtag('config', '{GOOGLE_ANALYTICS_ID}');
+        """)
     ]

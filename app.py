@@ -8,16 +8,18 @@ from layouts import TwoColumnLayout
 from components import PostCard, MachineCard, ContentSection
 from data.posts import get_posts, get_post_content, get_post_by_id
 from data.machines import get_machines
-from utils import get_meta_tags
-from config import FONT_URL, POST_GRID_COLUMNS, MACHINE_GRID_COLUMNS, SITE_NAME
+from utils import get_meta_tags, get_google_analytics
+from config import FONT_URL, POST_GRID_COLUMNS, MACHINE_GRID_COLUMNS, SITE_NAME, FAVICON_PATH
 
 # Initialize FastHTML app
 app, rt = fast_app(
     hdrs=(
+        Link(rel="icon", type="image/jpeg", href=FAVICON_PATH),
         Script(src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"),
         Link(rel="stylesheet", href=FONT_URL),
         Style(GLOBAL_STYLES),
         *get_meta_tags(),
+        *get_google_analytics(),
     )
 )
 # Routes
@@ -37,10 +39,11 @@ def get():
         ContentSection(
             P(
                 NotStr(
-                    "Colección de <span class='highlight-munra'>notas</span> y "
-                    "<span class='highlight-munra'>registros</span> creados por un humano que respira y transpira.<br>"
-                    "Está como acto de resistencia a algo.<br>"
-                    "Nosé todavía a qué.<br>"
+                    "Somos un <span class='highlight-munra'>estudio de grabación</span> musical.<br>"
+                    "Creamos <span class='highlight-munra'>registros</span> de forma artesanal y rudimentaria.<br>"
+                    "<br>"
+                    "<span class='highlight-munra'>Munra</span> es un acto de resistencia a lo sofisticado,<br>"
+                    "que persigue capturar al humano detrás que respira y transpira.<br>"
                     "<br>"
                 ),
                 style="font-size: 16px; line-height: 1.6; color: black; margin-bottom: 60px;"
@@ -116,7 +119,7 @@ def get():
     content = [
         H1("Contacto", style="margin-bottom: 40px; color: black;"),
         ContentSection(
-            P("Hola! Puedes escribirnos a xxxxx@xxx.com", 
+            P("Hola! Puedes escribirnos a rafasacaan@gmail.com", 
               style="font-size: 16px; line-height: 1.6; color: black;")
         ),
     ]
