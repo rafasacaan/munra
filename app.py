@@ -39,7 +39,7 @@ def get():
         ContentSection(
             P(
                 NotStr(
-                    "Somos un <span class='highlight-munra'>estudio de grabación</span> musical.<br>"
+                    "Somos un <span class='highlight-munra'>estudio de grabación</span> musical en Santiago de Chile.<br>"
                     "Creamos <span class='highlight-munra'>registros</span> de forma artesanal y rudimentaria.<br>"
                     "<br>"
                     "<span class='highlight-munra'>Munra</span> es un acto de resistencia a lo sofisticado,<br>"
