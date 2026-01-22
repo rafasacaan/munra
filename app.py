@@ -1,17 +1,34 @@
 from pathlib import Path
 from fasthtml.common import *
+from starlette.responses import RedirectResponse
 
 app, rt = fast_app(
     hdrs=(
         Script(src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"),
+        Link(rel="stylesheet", href="https://fonts.cdnfonts.com/css/pp-neue-montreal"),
         Style("""
             * {
-                font-family: monospace;
+                font-family: 'PP Neue Montreal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             }
             html, body {
                 background-color: white;
                 margin: 0;
                 padding: 0;
+            }
+            h1, h2, h3, h4, h5, h6 {
+                font-family: 'PP Neue Montreal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                text-transform: uppercase;
+                text-align: left;
+                font-weight: 900;
+                letter-spacing: -0.08em;
+            }
+            h1 {
+                font-size: 64px;
+                line-height: 0.75;
+            }
+            h2 {
+                font-size: 48px;
+                line-height: 0.75;
             }
             .highlight-munra {
                 background: linear-gradient(to right, 
@@ -100,12 +117,32 @@ def get_post_content(post_id):
         return content_file.read_text()
     return "No hay contenido disponible."
 
-def NavBar(current_page="home"):
+def NavBar(current_page="home", vertical=False):
     def nav_link(text, href, page_name):
         is_active = current_page == page_name
-        style = "color: black; font-size: 20px; text-decoration: none; margin-left: 100px; position: relative; display: inline-block;"
+        if vertical:
+            style = "color: black; font-size: 18px; text-decoration: none; display: block; margin-bottom: 15px; position: relative;"
+        else:
+            style = "color: black; font-size: 20px; text-decoration: none; margin-left: 100px; position: relative; display: inline-block;"
         cls = "nav-link-active" if is_active else ""
         return A(text, href=href, style=style, cls=cls)
+    
+    if vertical:
+        return Nav(
+            Div(
+                A(
+                    Img(src="/static/munra.jpg", alt="Munra Logo", 
+                        style="width: 100%; max-width: 260px; display: block;"),
+                    href="/home"),
+                style="margin-bottom: 50px;"
+            ),
+            Div(
+                nav_link("home", "/home", "home"),
+                nav_link("máquinas", "/maquinas", "máquinas"),
+                nav_link("contacto", "/contact", "contact"),
+            ),
+            style="padding: 30px; width: 320px; display: flex; flex-direction: column;"
+        )
     
     return Nav(
         Div(
@@ -144,298 +181,241 @@ def Page(*content):
 
 @rt("/")
 def get():
-
-    munras = get_munras()
-    munra_cards = [
-        Div(
-            A(
-                Img(src=get_munra_cover(munra), 
-                    alt=munra,
-                    style="width: 100%; height: 250px; object-fit: cover; margin-bottom: 10px;") 
-                    if get_munra_cover(munra) else Div(style="height: 250px; background-color: #ddd; margin-bottom: 10px;"),
-                P(munra, style="margin: 0; color: black;"),
-                href=f"/munras/{munra}", 
-                style="text-decoration: none;"
-            ),
-            cls="munra-card"
-        )
-        for munra in munras
-    ]
-    
-    grid = Div(
-        *munra_cards,
-        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;"
-    )
-    
-    return Title("munra.cl"), NavBar("munras"), Page(
-        P(
-            NotStr(
-                "Aquí encontrarás todos los <span class='highlight-munra'>munras</span>. <br>"
-                "Cada <span class='highlight-munra'>munra</span> es un extracto mínimo de contenido.<br>"
-            ),
-            style="font-size: 16px; margin-bottom: 30px; color: #333;"
-        ),
-        grid,
-        Script("""
-            document.addEventListener('DOMContentLoaded', function() {
-                // Draw card borders
-                const cards = document.querySelectorAll('.munra-card');
-                cards.forEach(card => {
-                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    svg.classList.add('munra-card-border');
-                    card.appendChild(svg);
-                    
-                    const rc = rough.svg(svg);
-                    const width = card.offsetWidth + 10;
-                    const height = card.offsetHeight + 10;
-                    svg.setAttribute('width', width);
-                    svg.setAttribute('height', height);
-                    
-                    const rect = rc.rectangle(5, 5, width - 10, height - 10, {
-                        stroke: '#999',
-                        strokeWidth: 0.8,
-                        roughness: 1.8,
-                        bowing: 1.2,
-                        fill: 'none',
-                        disableMultiStroke: false,
-                        seed: Math.random() * 1000
-                    });
-                    svg.appendChild(rect);
-                });
-                
-                // Draw nav underlines
-                const activeLinks = document.querySelectorAll('.nav-link-active');
-                activeLinks.forEach(link => {
-                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    svg.style.position = 'absolute';
-                    svg.style.bottom = '-5px';
-                    svg.style.left = '0';
-                    svg.style.width = '100%';
-                    svg.style.height = '10px';
-                    svg.style.pointerEvents = 'none';
-                    link.appendChild(svg);
-                    
-                    const rc = rough.svg(svg);
-                    const width = link.offsetWidth;
-                    svg.setAttribute('width', width);
-                    svg.setAttribute('height', 10);
-                    
-                    const line = rc.line(0, 3, width, 3, {
-                        stroke: '#000',
-                        strokeWidth: 1,
-                        roughness: 1.5,
-                        bowing: 0.5,
-                        seed: Math.random() * 1000
-                    });
-                    svg.appendChild(line);
-                });
-            });
-        """),
-        PageFooter()
-    )
+    return RedirectResponse("/home")
 
 
-@rt("/que-es")
-def get():
-    return Title("munra.cl"), NavBar("que-es"), Page(
-        P(
-            NotStr(
-            "<b>¿Qué es Munra?</b> <br>"
-            "<br>"
-            "Un <span class='highlight-munra'>munra</span> es un registro.<br>"
-            "Cada <span class='highlight-munra'>munra</span> es análogo: cinta, cassette, errores incluidos.<br>"
-            "<br>"
-            "Importa el proceso más que el resultado.<br>"
-            "Sin prisa, sin filtros.<br>"
-            "<br>"
-            "Cada <span class='highlight-munra'>munra</span> se hace una vez y nunca es exactamente igual.<br>"
-            "Made with love from Chile.<br>"
-            ),
-        style="font-size: 16px; line-height: 1.6; color: black;"
-        ),
-        Script("""
-            document.addEventListener('DOMContentLoaded', function() {
-                const activeLinks = document.querySelectorAll('.nav-link-active');
-                activeLinks.forEach(link => {
-                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    svg.style.position = 'absolute';
-                    svg.style.bottom = '-5px';
-                    svg.style.left = '0';
-                    svg.style.width = '100%';
-                    svg.style.height = '10px';
-                    svg.style.pointerEvents = 'none';
-                    link.appendChild(svg);
-                    
-                    const rc = rough.svg(svg);
-                    const width = link.offsetWidth;
-                    svg.setAttribute('width', width);
-                    svg.setAttribute('height', 10);
-                    
-                    const line = rc.line(0, 3, width, 3, {
-                        stroke: '#000',
-                        strokeWidth: 1,
-                        roughness: 1.5,
-                        bowing: 0.5,
-                        seed: Math.random() * 1000
-                    });
-                    svg.appendChild(line);
-                });
-            });
-        """),
-        PageFooter(),
-    )
-
-@rt("/notes")
+@rt("/home")
 def get():
     posts = get_posts()
+    left_nav = NavBar("home", vertical=True)
     
     post_list = [
-        Div(
-            A(
-                H2(post['title'], style="margin: 0 0 10px 0; color: black;"),
-                P(post['date'], style="font-size: 14px; color: #666; margin: 0 0 10px 0;"),
-                P(post['excerpt'], style="margin: 0; color: #333;"),
-                href=f"/notes/{post['id']}",
-                style="text-decoration: none;"
+        A(
+            Div(
+                Div(
+                    P(post['title'], style="margin: 0; font-size: 14px; color: white;"),
+                    style="background-color: black; padding: 4px 8px; display: inline-block;"
+                ),
+                style=f"aspect-ratio: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; background-image: url('https://picsum.photos/seed/{hash(post['id'])}/400/400'); background-size: cover; background-position: center;"
             ),
-            style="padding: 20px; margin-bottom: 20px; background-color: white; cursor: pointer;"
+            href=f"/notas/{post['id']}",
+            style="text-decoration: none; display: block;"
         )
         for post in posts
     ]
     
-    return Title("munra.cl"), NavBar("notes"), Page(
-        Div(*post_list) if post_list else P("No hay posts todavía."),
-        PageFooter()
+    right_content = Div(
+        Div(
+            H1("Que", style="margin: 0; color: black;"),
+            H1("es", style="margin: 0; color: black;"),
+            H1("Munra", style="margin: 0 0 40px 0; color: black;"),
+            style="margin-bottom: 40px;"
+        ),
+        Div(
+            P(
+                NotStr(
+                "Colección de <span class='highlight-munra'>notas</span> y <span class='highlight-munra'>registros</span> creados por un humano que respira y transpira.<br>"
+                "Está como acto de resistencia a algo.<br>"
+                "Nosé todavía a qué.<br>"
+                "<br>"
+                ),
+            style="font-size: 16px; line-height: 1.6; color: black; margin-bottom: 60px;"
+            ),
+            style="margin-left: 100px;"
+        ),
+        Div(
+            *post_list if post_list else [P("No hay posts todavía.", style="color: #666;")],
+            style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; grid-auto-flow: row;"
+        ),
+        Div(
+            P("munra.cl © 2025", style="margin: 0; color: #999;"),
+            style="margin-top: 80px; text-align: center; font-size: 12px;"
+        ),
+        style="flex: 1; padding: 40px; padding-right: 80px; overflow-y: auto; max-width: 1000px;"
     )
+    
+    layout = Div(
+        left_nav,
+        right_content,
+        style="display: flex; height: 100vh;"
+    )
+    
+    return Title("munra.cl"), layout
 
-@rt("/notes/{post_id}")
+@rt("/notas")
+def get():
+    return RedirectResponse("/home")
+
+@rt("/notas/{post_id}")
 def get(post_id: str):
     posts = get_posts()
     post = next((p for p in posts if p['id'] == post_id), None)
     
+    left_nav = NavBar("notas", vertical=True)
+    
     if not post:
-        return Title("Post no encontrado"), NavBar("notes"), Page(
-            P("Post no encontrado."),
-            PageFooter()
+        right_content = Div(
+            P("Post no encontrado.", style="color: #666;"),
+            style="flex: 1; padding: 40px; overflow-y: auto;"
         )
+        layout = Div(left_nav, right_content, style="display: flex; height: 100vh;")
+        return Title("Post no encontrado"), layout
     
     content = get_post_content(post_id)
     
-    return Title(f"{post['title']} - munra.cl"), NavBar("notes"), Page(
-        A("← volver a notes", href="/notes", style="color: black; text-decoration: none; display: inline-block; margin-bottom: 20px;"),
-        H1(post['title']),
-        P(post['date'], style="color: #666; font-size: 14px; margin-bottom: 30px;"),
-        P(content, style="line-height: 1.8; white-space: pre-wrap;"),
-        PageFooter()
+    right_content = Div(
+        A("← volver", href="/notas", style="color: black; text-decoration: none; display: inline-block; margin-bottom: 30px; font-size: 16px;"),
+        H1(post['title'], style="margin-bottom: 10px; color: black;"),
+        P(post['date'], style="color: #666; font-size: 14px; margin-bottom: 40px;"),
+        Div(
+            P(content, style="line-height: 1.8; white-space: pre-wrap; color: black;"),
+            style="margin-left: 100px;"
+        ),
+        Div(
+            P("munra.cl © 2025", style="margin: 0; color: #999;"),
+            style="margin-top: 80px; text-align: center; font-size: 12px;"
+        ),
+        style="flex: 1; padding: 40px; padding-right: 80px; overflow-y: auto; max-width: 1000px;"
     )
+    
+    layout = Div(
+        left_nav,
+        right_content,
+        style="display: flex; height: 100vh;"
+    )
+    
+    return Title(f"{post['title']} - munra.cl"), layout
+
+@rt("/maquinas")
+def get():
+    left_nav = NavBar("maquinas", vertical=True)
+    
+    # Sample machines data
+    machines = [
+        {
+            "name": "Tascam Portastudio", 
+            "seed": "tascam1",
+            "description": "Cuatro pistas de cinta que capturan el tiempo de manera física. El hiss como textura, no como error. Cada grabación es un acto irreversible que obliga a decidir."
+        },
+        {
+            "name": "Akai MPC 2000XL", 
+            "seed": "akai2",
+            "description": "Pads sensibles a la presión que responden al tacto humano. Secuenciador que piensa en loops, no en barras infinitas. La memoria limitada como restricción creativa."
+        },
+        {
+            "name": "Roland SP-404", 
+            "seed": "roland3",
+            "description": "Sampler portátil que cabe en una mochila. Efectos lo-fi que abrazan la degradación. Diseñado para ser tocado en vivo, no programado en silencio."
+        },
+        {
+            "name": "Technics SL-1200", 
+            "seed": "technics4",
+            "description": "Tornamesa de tracción directa construida como tanque. El vinilo como formato físico irremplazable. Scratchear es tocar un instrumento, no reproducir audio."
+        },
+        {
+            "name": "Korg Volca Keys", 
+            "seed": "korg5",
+            "description": "Sintetizador análogo que cabe en la palma de la mano. Perillas físicas para cada parámetro esencial. Lo pequeño no es limitación, es enfoque."
+        },
+        {
+            "name": "Teenage Engineering OP-1", 
+            "seed": "teenage6",
+            "description": "Estudio completo con batería incorporada. Limitaciones de grabación que fuerzan creatividad. Diseño que invita a explorar, no a optimizar."
+        },
+    ]
+    
+    machine_grid = [
+        Div(
+            Img(src=f"https://picsum.photos/seed/{m['seed']}/600/400", 
+                style="width: 100%; display: block; object-fit: cover;"),
+            Div(
+                P(m['name'], style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: black;"),
+                P(m['description'], style="margin: 0; font-size: 14px; line-height: 1.6; color: black;"),
+                style="padding: 15px; background-color: white;"
+            ),
+            style="background-color: white; margin-bottom: 30px;"
+        )
+        for m in machines
+    ]
+    
+    right_content = Div(
+        H1("Maquinas", style="margin-bottom: 40px; color: black;"),
+        Div(
+            P(
+                "Herramientas físicas que respiran. Cada una con su carácter, sus imperfecciones, su manera de hablar. "
+                "Resistencia a la perfección digital. Lo análogo como acto político.",
+                style="font-size: 16px; line-height: 1.6; color: black; margin-bottom: 60px;"
+            ),
+            style="margin-left: 100px;"
+        ),
+        Div(
+            *machine_grid,
+            style="display: grid; grid-template-columns: 1fr; gap: 0;"
+        ),
+        Div(
+            P("munra.cl © 2026", style="margin: 0; color: #999;"),
+            style="margin-top: 80px; text-align: center; font-size: 12px;"
+        ),
+        style="flex: 1; padding: 40px; padding-right: 80px; overflow-y: auto; max-width: 1000px;"
+    )
+    
+    layout = Div(
+        left_nav,
+        right_content,
+        style="display: flex; height: 100vh;"
+    )
+    
+    return Title("Máquinas - munra.cl"), layout
 
 @rt("/contact")
 def get():
-    return Title("munra.cl"), NavBar("contact"), Page(
-        P("Escríbenos a rafasacaan@gmail.com", style="font-size: 16px; line-height: 1.6; color: black;"),
-        Script("""
-            document.addEventListener('DOMContentLoaded', function() {
-                const activeLinks = document.querySelectorAll('.nav-link-active');
-                activeLinks.forEach(link => {
-                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    svg.style.position = 'absolute';
-                    svg.style.bottom = '-5px';
-                    svg.style.left = '0';
-                    svg.style.width = '100%';
-                    svg.style.height = '10px';
-                    svg.style.pointerEvents = 'none';
-                    link.appendChild(svg);
-                    
-                    const rc = rough.svg(svg);
-                    const width = link.offsetWidth;
-                    svg.setAttribute('width', width);
-                    svg.setAttribute('height', 10);
-                    
-                    const line = rc.line(0, 3, width, 3, {
-                        stroke: '#000',
-                        strokeWidth: 1,
-                        roughness: 1.5,
-                        bowing: 0.5,
-                        seed: Math.random() * 1000
-                    });
-                    svg.appendChild(line);
-                });
-            });
-        """),        PageFooter()
-    )
-
-@rt("/munras/{munra_name}")
-def get(munra_name: str):
-    info = get_munra_info(munra_name)
-    tracks = get_munra_tracks(munra_name)
+    left_nav = NavBar("contact", vertical=True)
     
-    # Left side - Munra info
-    left_section = Div(
-        H1(munra_name),
-        P(info, style="line-height: 1.6; white-space: pre-wrap;"),
-        style="padding: 20px; flex: 1;"
-    )
-    
-    # Right side - Track list
-    track_list = [
+    right_content = Div(
+        H1("Contacto", style="margin-bottom: 40px; color: black;"),
         Div(
-            P(track, style="margin-bottom: 5px; font-size: 14px; color: black;"),
-            Audio(
-                Source(src=f"/static/munras/{munra_name}/{track}", type="audio/mpeg"),
-                controls=True,
-                style="width: 100%; height: 30px;"
-            ),
-            style="margin-bottom: 20px; padding: 15px; background-color: white;"
-        )
-        for track in tracks
-    ]
-    
-    right_section = Div(
-        H2("tracks"),
-        *track_list,
-        style="padding: 20px; flex: 1; position: relative;",
-        cls="munra-separator"
+            P("Hola! Puedes escribirnos a xxxxx@xxx.com", style="font-size: 16px; line-height: 1.6; color: black;"),
+            style="margin-left: 100px;"
+        ),
+        Div(
+            P("munra.cl © 2026", style="margin: 0; color: #999;"),
+            style="margin-top: 80px; text-align: center; font-size: 12px;"
+        ),
+        style="flex: 1; padding: 40px; padding-right: 80px; overflow-y: auto; max-width: 1000px;"
     )
     
-    # Two column layout
-    content = Div(
-        left_section,
-        right_section,
-        style="display: flex; gap: 20px;"
+    layout = Div(
+        left_nav,
+        right_content,
+        style="display: flex; height: 100vh;"
     )
     
-    return Title(f"{munra_name} - munra.cl"), NavBar("munras"), Page(
-        content,
-        Script("""
-            document.addEventListener('DOMContentLoaded', function() {
-                const separator = document.querySelector('.munra-separator');
-                if (separator) {
-                    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                    svg.style.position = 'absolute';
-                    svg.style.left = '0';
-                    svg.style.top = '0';
-                    svg.style.height = '100%';
-                    svg.style.width = '20px';
-                    svg.style.pointerEvents = 'none';
-                    separator.appendChild(svg);
-                    
-                    const rc = rough.svg(svg);
-                    svg.setAttribute('width', 20);
-                    svg.setAttribute('height', separator.offsetHeight);
-                    
-                    const line = rc.line(5, 0, 5, separator.offsetHeight, {
-                        stroke: '#999',
-                        strokeWidth: 0.8,
-                        roughness: 1.8,
-                        bowing: 1.2,
-                        seed: Math.random() * 1000
-                    });
-                    svg.appendChild(line);
-                }
-            });
-        """),
-        PageFooter()
+    return Title("munra.cl"), layout
+
+@rt("/contact")
+def get():
+    left_nav = NavBar("contact", vertical=True)
+    
+    right_content = Div(
+        H1("Contacto", style="margin-bottom: 40px; color: black;"),
+        Div(
+            P("Hola! Puedes escribirnos a xxxxx@xxx.com", style="font-size: 16px; line-height: 1.6; color: black;"),
+            style="margin-left: 100px;"
+        ),
+        Div(
+            P("munra.cl © 2026", style="margin: 0; color: #999;"),
+            style="margin-top: 80px; text-align: center; font-size: 12px;"
+        ),
+        style="flex: 1; padding: 40px; padding-right: 80px; overflow-y: auto; max-width: 1000px;"
     )
+    
+    layout = Div(
+        left_nav,
+        right_content,
+        style="display: flex; height: 100vh;"
+    )
+    
+    return Title("munra.cl"), layout
 
 
 serve()
