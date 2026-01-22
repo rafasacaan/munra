@@ -23,4 +23,4 @@ def TwoColumnLayout(current_page, content, title=SITE_NAME):
         cls="main-layout"
     )
     
-    return Title(title), layout
+    return layout

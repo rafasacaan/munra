@@ -59,7 +59,7 @@ def get():
         ),
     ]
     
-    return TwoColumnLayout("home", content, SITE_NAME)
+    return Title(SITE_NAME), TwoColumnLayout("home", content)
 
 
 @rt("/notas")
@@ -75,7 +75,7 @@ def get(post_id: str):
     
     if not post:
         content = [P("Post no encontrado.", style="color: #666;")]
-        return TwoColumnLayout("notas", content, "Post no encontrado")
+        return Title("Post no encontrado"), TwoColumnLayout("notas", content)
     
     post_content = get_post_content(post_id)
     
@@ -89,7 +89,7 @@ def get(post_id: str):
         ),
     ]
     
-    return TwoColumnLayout("notas", content, f"{post['title']} - munra.cl")
+    return Title(f"{post['title']} - munra.cl"), TwoColumnLayout("notas", content)
 
 
 @rt("/maquinas")
@@ -113,7 +113,7 @@ def get():
         ),
     ]
     
-    return TwoColumnLayout("máquinas", content, "Máquinas - munra.cl")
+    return Title("Máquinas - munra.cl"), TwoColumnLayout("máquinas", content)
 
 
 @rt("/contact")
@@ -127,7 +127,7 @@ def get():
         ),
     ]
     
-    return TwoColumnLayout("contact", content, SITE_NAME)
+    return Title(SITE_NAME), TwoColumnLayout("contact", content)
 
 
 @app.exception_handler(404)
@@ -149,7 +149,7 @@ async def not_found(request, exc):
         ),
     ]
     
-    return TwoColumnLayout("404", content, "404 - Página no encontrada")
+    return Title("404 - Página no encontrada"), TwoColumnLayout("404", content)
 
 
 # Start the server
