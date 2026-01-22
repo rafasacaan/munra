@@ -8,6 +8,11 @@ app, rt = fast_app(
             * {
                 font-family: monospace;
             }
+            html, body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+            }
             .highlight-munra {
                 background: linear-gradient(to right, 
                     rgba(255, 110, 199, 0.7) 0%, 
@@ -246,7 +251,7 @@ def get():
             "Cada <span class='highlight-munra'>munra</span> se hace una vez y nunca es exactamente igual.<br>"
             "Made with love from Chile.<br>"
             ),
-        style="font-size: 16px; line-height: 1.6;"
+        style="font-size: 16px; line-height: 1.6; color: black;"
         ),
         Script("""
             document.addEventListener('DOMContentLoaded', function() {
@@ -327,7 +332,8 @@ def get(post_id: str):
 @rt("/contact")
 def get():
     return Title("munra.cl"), NavBar("contact"), Page(
-        P("Escríbenos a rafasacaan@gmail.com"),        Script("""
+        P("Escríbenos a rafasacaan@gmail.com", style="font-size: 16px; line-height: 1.6; color: black;"),
+        Script("""
             document.addEventListener('DOMContentLoaded', function() {
                 const activeLinks = document.querySelectorAll('.nav-link-active');
                 activeLinks.forEach(link => {
