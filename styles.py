@@ -88,6 +88,16 @@ GLOBAL_STYLES = f"""
         .vertical-nav img {{
             max-width: 180px !important;
         }}
+        /* Nav links horizontal en móvil */
+        .nav-links {{
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 20px !important;
+            justify-content: center !important;
+        }}
+        .nav-links a {{
+            margin-bottom: 0 !important;
+        }}
         .content-area {{
             padding: 20px !important;
             padding-right: 20px !important;

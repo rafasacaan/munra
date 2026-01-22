@@ -24,13 +24,14 @@ def NavBar(current_page="home", vertical=False):
                 A(
                     Img(src=LOGO_PATH, alt="Munra Logo", 
                         style="width: 100%; max-width: 260px; display: block;"),
-                    href="/home"),
+                    href="/"),
                 style="margin-bottom: 50px;"
             ),
             Div(
-                nav_link("home", "/home", "home"),
+                nav_link("home", "/", "home"),
                 nav_link("máquinas", "/maquinas", "máquinas"),
                 nav_link("contacto", "/contact", "contact"),
+                cls="nav-links"
             ),
             style=f"padding: 30px; width: {NAVBAR_WIDTH}; display: flex; flex-direction: column;",
             cls="vertical-nav"

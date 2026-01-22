@@ -23,12 +23,6 @@ app, rt = fast_app(
 # Routes
 @rt("/")
 def get():
-    """Redirect to home page"""
-    return RedirectResponse("/home")
-
-
-@rt("/home")
-def get():
     """Home page with posts grid"""
     posts = get_posts()
     post_list = [PostCard(post) for post in posts]
@@ -65,7 +59,7 @@ def get():
 @rt("/notas")
 def get():
     """Redirect to home page"""
-    return RedirectResponse("/home")
+    return RedirectResponse("/")
 
 
 @rt("/notas/{post_id}")
@@ -80,7 +74,7 @@ def get(post_id: str):
     post_content = get_post_content(post_id)
     
     content = [
-        A("← volver", href="/notas", 
+        A("← volver", href="/", 
           style="color: black; text-decoration: none; display: inline-block; margin-bottom: 30px; font-size: 16px;"),
         H1(post['title'], style="margin-bottom: 10px; color: black;"),
         P(post['date'], style="color: #666; font-size: 14px; margin-bottom: 40px;"),
@@ -144,7 +138,7 @@ async def not_found(request, exc):
                 "La página que buscas no existe. Tal vez nunca existió. O tal vez es parte del vacío digital.",
                 style="font-size: 16px; line-height: 1.6; color: black; margin-bottom: 30px;"
             ),
-            A("← Volver al inicio", href="/home", 
+            A("← Volver al inicio", href="/", 
               style="color: black; text-decoration: underline; font-size: 16px;")
         ),
     ]
