@@ -39,11 +39,17 @@ def get():
         ContentSection(
             P(
                 NotStr(
-                    "Somos un <span class='highlight-munra'>estudio de grabación</span> musical en Santiago de Chile.<br>"
-                    "Creamos <span class='highlight-munra'>registros</span> de forma artesanal y rudimentaria.<br>"
+                    "<b><i>\"Antes de dar vuelta la cinta, déjela pasar hasta el final.\"</i></b><br>"
+                    "<i style='font-size: 14px;'>- Instrucción técnica para asegurar el correcto funcionamiento del mecanismo<br>"
+                    "de la cinta y evitar que se enrede.</i><br>"
+                    "<br>"
+                    "Munra es un <span class='highlight-munra'>estudio de grabación</span> musical en Santiago de Chile,<br>"
+                    "donde se crean registros de forma  <span class='highlight-munra'>artesanal</span> y  <span class='highlight-munra'>rudimentaria</span>.<br>"
                     "<br>"
                     "<span class='highlight-munra'>Munra</span> es un acto de resistencia a lo sofisticado,<br>"
                     "que persigue capturar al humano detrás que respira y transpira.<br>"
+                    "<br>"
+                    "Si te interesa algo de acá, chequea nuestros registros o escríbenos!<br>"
                     "<br>"
                 ),
                 style="font-size: 16px; line-height: 1.6; color: black; margin-bottom: 60px;"
