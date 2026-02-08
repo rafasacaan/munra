@@ -27,7 +27,7 @@ def NavBar(current_page="home"):
             nav_link("máquinas", "/maquinas", "máquinas"),
             nav_link("contacto", "/contact", "contact"),
             cls="nav-links",
-            style="margin-left: 35px;"
+            style="margin-left: 17px;"
         ),
         style=f"padding: 30px; width: {NAVBAR_WIDTH}; display: flex; flex-direction: column;",
         cls="vertical-nav"
