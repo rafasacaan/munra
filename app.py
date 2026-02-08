@@ -1,158 +1,94 @@
 """Main application file"""
 
 from fasthtml.common import *
-from starlette.responses import RedirectResponse
 
 from styles import GLOBAL_STYLES
-from layouts import TwoColumnLayout
-from components import PostCard, MachineCard, ContentSection
-from data.posts import get_posts, get_post_content, get_post_by_id
-from data.machines import get_machines
+from layouts import TwoColumnLayout, ContentArea
 from utils import get_meta_tags, get_google_analytics
-from config import FONT_URL, POST_GRID_COLUMNS, MACHINE_GRID_COLUMNS, SITE_NAME, FAVICON_PATH
+from config import FONT_URL, SITE_NAME, FAVICON_PATH, CONTACT_EMAIL
 
 # Initialize FastHTML app
 app, rt = fast_app(
     hdrs=(
         Link(rel="icon", type="image/jpeg", href=FAVICON_PATH),
-        Script(src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"),
         Link(rel="stylesheet", href=FONT_URL),
         Style(GLOBAL_STYLES),
         *get_meta_tags(),
         *get_google_analytics(),
+        Script("""
+            document.addEventListener('click', function(e) {
+                var link = e.target.closest('.nav-links a');
+                if (link) {
+                    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('nav-link-active'));
+                    link.classList.add('nav-link-active');
+                }
+            });
+        """),
     )
 )
+
+
 # Routes
 @rt("/")
-def get():
-    """Home page with posts grid"""
-    posts = get_posts()
-    post_list = [PostCard(post) for post in posts]
-    
-    content = [
-        Div(
-            H1("Que", style="margin: 0; color: black;"),
-            H1("es", style="margin: 0; color: black;"),
-            H1("Munra", style="margin: 0 0 40px 0; color: black;"),
-            style="margin-bottom: 40px;"
-        ),
-        ContentSection(
-            P(
-                NotStr(
-                    "<b><i>\"Antes de dar vuelta la cinta, déjela pasar hasta el final.\"</i></b><br>"
-                    "<i style='font-size: 14px;'>- Instrucción técnica para asegurar el correcto funcionamiento del mecanismo<br>"
-                    "de la cinta y evitar que se enrede.</i><br>"
-                    "<br>"
-                    "Munra es un <span class='highlight-munra'>estudio de grabación</span> musical en Santiago de Chile,<br>"
-                    "donde se crean registros de forma  <span class='highlight-munra'>artesanal</span> y  <span class='highlight-munra'>rudimentaria</span>.<br>"
-                    "<br>"
-                    "<span class='highlight-munra'>Munra</span> es un acto de resistencia a lo sofisticado,<br>"
-                    "que persigue capturar al humano detrás que respira y transpira.<br>"
-                    "<br>"
-                    "Si te interesa algo de acá, chequea nuestros registros o escríbenos!<br>"
-                    "<br>"
-                ),
-                style="font-size: 16px; line-height: 1.6; color: black; margin-bottom: 60px;"
-            )
-        ),
-        Div(
-            *post_list if post_list else [P("No hay posts todavía.", style="color: #666;")],
-            style=f"display: grid; grid-template-columns: repeat({POST_GRID_COLUMNS}, 1fr); gap: 10px; grid-auto-flow: row;",
-            cls="post-grid"
-        ),
-    ]
-    
-    return Title(SITE_NAME), TwoColumnLayout("home", content)
+def get(request):
+    """Home page"""
+    home_title = NotStr("Estudio de creación de audio<br>análogo y experimental.")
+    content = []
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, home_title)
+    return Title(SITE_NAME), TwoColumnLayout("home", content, section_name=home_title)
+
+
+@rt("/grabaciones")
+def get(request):
+    """Grabaciones page"""
+    content = [P("Próximamente...", style="font-size: 18px; font-weight: 300; color: white;")]
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, "Grabaciones")
+    return Title("Grabaciones - munra.cl"), TwoColumnLayout("grabaciones", content, section_name="Grabaciones")
 
 
 @rt("/notas")
-def get():
-    """Redirect to home page"""
-    return RedirectResponse("/")
-
-
-@rt("/notas/{post_id}")
-def get(post_id: str):
-    """Individual post page"""
-    post = get_post_by_id(post_id)
-    
-    if not post:
-        content = [P("Post no encontrado.", style="color: #666;")]
-        return Title("Post no encontrado"), TwoColumnLayout("notas", content)
-    
-    post_content = get_post_content(post_id)
-    
-    content = [
-        A("← volver", href="/", 
-          style="color: black; text-decoration: none; display: inline-block; margin-bottom: 30px; font-size: 16px;"),
-        H1(post['title'], style="margin-bottom: 10px; color: black;"),
-        P(post['date'], style="color: #666; font-size: 14px; margin-bottom: 40px;"),
-        ContentSection(
-            P(post_content, style="line-height: 1.8; white-space: pre-wrap; color: black;")
-        ),
-    ]
-    
-    return Title(f"{post['title']} - munra.cl"), TwoColumnLayout("notas", content)
+def get(request):
+    """Notas page"""
+    content = [P("Próximamente...", style="font-size: 18px; font-weight: 300; color: white;")]
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, "Notas")
+    return Title("Notas - munra.cl"), TwoColumnLayout("notas", content, section_name="Notas")
 
 
 @rt("/maquinas")
-def get():
+def get(request):
     """Machines page"""
-    machines = get_machines()
-    machine_cards = [MachineCard(m) for m in machines]
-    
-    content = [
-        H1("Maquinas", style="margin-bottom: 40px; color: black;"),
-        ContentSection(
-            P(
-                "Herramientas físicas que respiran. Cada una con su carácter, sus imperfecciones, su manera de hablar. "
-                "Resistencia a la perfección digital. Lo análogo como acto político.",
-                style="font-size: 16px; line-height: 1.6; color: black; margin-bottom: 60px;"
-            )
-        ),
-        Div(
-            *machine_cards,
-            style=f"display: grid; grid-template-columns: repeat({MACHINE_GRID_COLUMNS}, 1fr); gap: 0;"
-        ),
-    ]
-    
-    return Title("Máquinas - munra.cl"), TwoColumnLayout("máquinas", content)
+    content = [P("Próximamente...", style="font-size: 18px; font-weight: 300; color: white;")]
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, "Máquinas")
+    return Title("Máquinas - munra.cl"), TwoColumnLayout("máquinas", content, section_name="Máquinas")
 
 
 @rt("/contact")
-def get():
+def get(request):
     """Contact page"""
     content = [
-        H1("Contacto", style="margin-bottom: 40px; color: black;"),
-        ContentSection(
-            P("Hola! Puedes escribirnos a rafasacaan@gmail.com", 
-              style="font-size: 16px; line-height: 1.6; color: black;")
-        ),
+        P(f"Escríbenos a {CONTACT_EMAIL.replace('@', ' at ')}",
+          style="font-size: 18px; font-weight: 300; color: white;"),
     ]
-    
-    return Title(SITE_NAME), TwoColumnLayout("contact", content)
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, "Contacto")
+    return Title(SITE_NAME), TwoColumnLayout("contact", content, section_name="Contacto")
 
 
 @app.exception_handler(404)
 async def not_found(request, exc):
     """Custom 404 page"""
     content = [
-        Div(
-            H1("404", style="margin: 0 0 20px 0; color: black;"),
-            H2("Página no encontrada", style="margin: 0 0 40px 0; color: black;"),
-            style="margin-bottom: 40px;"
-        ),
-        ContentSection(
-            P(
-                "La página que buscas no existe. Tal vez nunca existió. O tal vez es parte del vacío digital.",
-                style="font-size: 16px; line-height: 1.6; color: black; margin-bottom: 30px;"
-            ),
-            A("← Volver al inicio", href="/", 
-              style="color: black; text-decoration: underline; font-size: 16px;")
-        ),
+        P("La página que buscas no existe.",
+          style="font-size: 18px; font-weight: 300; color: white; margin-bottom: 30px;"),
+        A("← Volver al inicio", href="/",
+          style="color: white; text-decoration: underline; font-size: 16px;"),
     ]
-    
-    return Title("404 - Página no encontrada"), TwoColumnLayout("404", content)
+
+    return Title("404 - Página no encontrada"), TwoColumnLayout("404", content, section_name="404")
 
 
 # Start the server

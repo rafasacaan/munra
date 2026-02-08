@@ -1,15 +1,10 @@
 """Configuration constants for the application"""
 
-# Server settings
-PORT = 5001
-HOST = "0.0.0.0"
-DEBUG = True
-
 # Site metadata
 SITE_NAME = "munra.cl"
-SITE_DESCRIPTION = "Somos un estudio de grabación musical. Creamos registros de forma artesanal y rudimentaria. Munra es un acto de resistencia a lo sofisticado, persiguiendo capturar al humano detrás que respira y transpira."
+SITE_DESCRIPTION = "Estudio de creación de audio análogo y experimental. Santiago, Chile."
 SITE_URL = "https://munra.cl"
-CONTACT_EMAIL = "xxxxx@xxx.com"
+CONTACT_EMAIL = "rafasacaan@gmail.com"
 
 # Copyright
 COPYRIGHT_YEAR = "2026"
@@ -17,31 +12,20 @@ COPYRIGHT_TEXT = f"munra.cl © {COPYRIGHT_YEAR}"
 
 # Layout settings
 NAVBAR_WIDTH = "320px"
-CONTENT_MAX_WIDTH = "1000px"
-CONTENT_OFFSET = "100px"
-
-# Grid settings
-POST_GRID_COLUMNS = 6
-MACHINE_GRID_COLUMNS = 1
 
 # Typography
-FONT_FAMILY = "'PP Neue Montreal', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
-FONT_URL = "https://fonts.cdnfonts.com/css/pp-neue-montreal"
+FONT_FAMILY = "'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+FONT_URL = "https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300;400;500;600;700;800;900&display=swap"
 
 # Colors
-COLOR_BLACK = "#000000"
 COLOR_WHITE = "#ffffff"
 COLOR_GRAY = "#999"
-COLOR_DARK_GRAY = "#666"
-
-# Image settings
-PICSUM_BASE_URL = "https://picsum.photos"
+COLOR_BG = "#333333"
 
 # Paths
-STATIC_NOTES_PATH = "static/notes"
-STATIC_MUNRAS_PATH = "static/munras"
-LOGO_PATH = "/static/munra.jpg"
-FAVICON_PATH = "/static/munra.jpg"
+LOGO_PATH = "/static/imgs/munra-logo.png"
+FAVICON_PATH = "/static/imgs/munra.jpg"
+BG_VIDEO_PATH = "/static/videos/munra-v2-web.mp4"
 
 # Analytics
 GOOGLE_ANALYTICS_ID = "G-5WWLZXKEX0"

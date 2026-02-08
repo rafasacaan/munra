@@ -9,7 +9,7 @@ def get_meta_tags(title=None, description=None, image=None, url=None):
     page_title = f"{title} - {SITE_NAME}" if title and title != SITE_NAME else SITE_NAME
     page_description = description or SITE_DESCRIPTION
     page_url = f"{SITE_URL}{url}" if url else SITE_URL
-    page_image = image or f"{SITE_URL}/static/munra.jpg"
+    page_image = image or f"{SITE_URL}/static/imgs/munra.jpg"
     
     return [
         # Basic meta tags
@@ -18,7 +18,7 @@ def get_meta_tags(title=None, description=None, image=None, url=None):
         Meta(name="description", content=page_description),
         Meta(name="keywords", content="munra, notas, registros, análogo, música, máquinas"),
         Meta(name="author", content="munra.cl"),
-        Meta(name="theme-color", content="#ffffff"),
+        Meta(name="theme-color", content="#333333"),
         
         # Open Graph / Facebook
         Meta(property="og:type", content="website"),
