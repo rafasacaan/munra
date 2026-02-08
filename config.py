@@ -23,7 +23,7 @@ COLOR_GRAY = "#999"
 COLOR_BG = "#333333"
 
 # Paths
-LOGO_PATH = "/static/imgs/munra-logo.png"
+LOGO_PATH = "/static/imgs/munra-logo-alt.png"
 FAVICON_PATH = "/static/imgs/munra.jpg"
 BG_VIDEO_PATH = "/static/videos/munra-v2-web.mp4"
 
