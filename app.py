@@ -32,7 +32,7 @@ app, rt = fast_app(
 @rt("/")
 def get(request):
     """Home page"""
-    home_title = NotStr("Estudio de creación de audio<br>análogo y experimental.")
+    home_title = NotStr("Estudio de creación de audio<br>análogo y experimental .")
     content = []
     if request.headers.get("HX-Request"):
         return ContentArea(content, home_title)
