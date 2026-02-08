@@ -10,7 +10,7 @@ def SectionTitle(section_name):
     return Div(
         P(section_name,
           style="font-size: 64px; font-weight: 200; line-height: 1.1; color: white; margin: 0; text-transform: uppercase; letter-spacing: -0.08em;"),
-        style="position: absolute; bottom: 40px; right: 80px; text-align: right;"
+        cls="section-title"
     )
 
 

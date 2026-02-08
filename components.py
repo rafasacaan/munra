@@ -38,5 +38,6 @@ def Footer():
     """Footer component with copyright"""
     return Div(
         P(COPYRIGHT_TEXT, style=f"margin: 0; color: {COLOR_GRAY};"),
-        style="position: absolute; bottom: 15px; right: 80px; font-size: 12px;"
+        style="font-size: 12px;",
+        cls="footer"
     )

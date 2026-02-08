@@ -45,6 +45,17 @@ GLOBAL_STYLES = f"""
         height: 3px;
         background-color: white;
     }}
+    .section-title {{
+        position: absolute;
+        bottom: 40px;
+        right: 80px;
+        text-align: right;
+    }}
+    .footer {{
+        position: absolute;
+        bottom: 15px;
+        right: 80px;
+    }}
 
     /* Responsive layout */
     @media (max-width: 768px) {{
@@ -67,20 +78,40 @@ GLOBAL_STYLES = f"""
         }}
         .vertical-nav img {{
             max-width: 180px !important;
+            margin-bottom: 20px;
         }}
         .nav-links {{
             display: flex !important;
             flex-direction: row !important;
             gap: 20px !important;
             justify-content: center !important;
+            margin-left: 0 !important;
+            font-size: 14px;
         }}
         .nav-links a {{
             margin-bottom: 0 !important;
+            font-size: 14px !important;
         }}
         .content-area {{
             padding: 20px !important;
             padding-right: 20px !important;
+            padding-bottom: 40px !important;
             max-width: 100% !important;
+            min-height: 60vh;
+        }}
+        .section-title {{
+            position: static !important;
+            text-align: left;
+            margin-top: auto;
+            padding: 20px 0;
+        }}
+        .section-title p {{
+            font-size: 32px !important;
+        }}
+        .footer {{
+            position: static !important;
+            text-align: center;
+            padding: 10px 0;
         }}
     }}
 
@@ -89,6 +120,9 @@ GLOBAL_STYLES = f"""
             font-size: 32px !important;
         }}
         h2 {{
+            font-size: 24px !important;
+        }}
+        .section-title p {{
             font-size: 24px !important;
         }}
     }}
