@@ -113,7 +113,7 @@ GLOBAL_STYLES = f"""
     }}
     .hero-title {{
         font-size: 96px;
-        font-weight: 300;
+        font-weight: 100;
         line-height: 0.9;
         display: inline-block;
     }}
