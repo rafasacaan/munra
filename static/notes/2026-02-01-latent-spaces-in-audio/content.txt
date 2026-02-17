@@ -1,0 +1,9 @@
+When you compress audio into a learned latent representation, you create a navigable space where proximity means perceptual similarity. Moving through this space is like walking through a landscape of sound.
+
+We trained a variational autoencoder on a collection of synthesizer recordings — patches from analog machines, mostly drones and textures. The 64-dimensional latent space that emerged has a geography.
+
+One axis seems to control brightness. Another maps roughly to density. But most dimensions encode something we don't have words for — qualities of sound that exist between our categories.
+
+The most useful discovery: interpolation works. You can draw a line between two sounds in latent space and every point along that line is a valid, coherent sound. Not a crossfade — a transformation.
+
+This is the foundation for the tools we're building. Not generating sound from nothing, but navigating between sounds that already exist.

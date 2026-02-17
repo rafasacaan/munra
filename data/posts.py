@@ -29,7 +29,7 @@ def get_post_content(post_id):
     content_file = Path(STATIC_NOTES_PATH) / post_id / "content.txt"
     if content_file.exists():
         return content_file.read_text()
-    return "No hay contenido disponible."
+    return "No content available."
 
 
 def get_post_by_id(post_id):

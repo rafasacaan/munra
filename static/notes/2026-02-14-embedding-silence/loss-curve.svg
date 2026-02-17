@@ -1,0 +1,20 @@
+<svg viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg" style="background:#111;border-radius:4px">
+  <text x="300" y="25" text-anchor="middle" fill="#999" font-size="14" font-family="sans-serif">Training Loss — Silence Autoencoder</text>
+  <line x1="60" y1="40" x2="60" y2="260" stroke="#333" stroke-width="1"/>
+  <line x1="60" y1="260" x2="570" y2="260" stroke="#333" stroke-width="1"/>
+  <text x="30" y="50" fill="#666" font-size="10" font-family="sans-serif">0.8</text>
+  <text x="30" y="105" fill="#666" font-size="10" font-family="sans-serif">0.6</text>
+  <text x="30" y="160" fill="#666" font-size="10" font-family="sans-serif">0.4</text>
+  <text x="30" y="215" fill="#666" font-size="10" font-family="sans-serif">0.2</text>
+  <text x="30" y="265" fill="#666" font-size="10" font-family="sans-serif">0.0</text>
+  <text x="60" y="280" fill="#666" font-size="10" font-family="sans-serif">0</text>
+  <text x="185" y="280" fill="#666" font-size="10" font-family="sans-serif">50</text>
+  <text x="310" y="280" fill="#666" font-size="10" font-family="sans-serif">100</text>
+  <text x="440" y="280" fill="#666" font-size="10" font-family="sans-serif">150</text>
+  <text x="555" y="280" fill="#666" font-size="10" font-family="sans-serif">200</text>
+  <text x="315" y="296" fill="#666" font-size="10" font-family="sans-serif">Epochs</text>
+  <polyline points="60,55 85,72 110,95 135,115 160,132 185,148 210,160 235,170 260,178 285,185 310,190 335,194 360,197 385,200 410,203 435,205 460,207 485,208 510,209 535,210 560,210" fill="none" stroke="#4a9eff" stroke-width="2"/>
+  <polyline points="60,60 85,80 110,105 135,125 160,145 185,162 210,175 235,188 260,198 285,208 310,216 335,222 360,227 385,231 410,234 435,237 460,239 485,240 510,241 535,242 560,242" fill="none" stroke="#ff9e4a" stroke-width="2" stroke-dasharray="6,3"/>
+  <circle cx="80" cy="290" r="4" fill="#4a9eff"/><text x="90" y="294" fill="#999" font-size="10" font-family="sans-serif">Train</text>
+  <circle cx="140" cy="290" r="4" fill="#ff9e4a"/><text x="150" y="294" fill="#999" font-size="10" font-family="sans-serif">Val</text>
+</svg>

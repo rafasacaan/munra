@@ -2,53 +2,73 @@
 
 from fasthtml.common import *
 from components import NavBar, Footer
-from config import SITE_NAME, BG_VIDEO_PATH
+from config import BG_VIDEO_PATH
 
 
-def SectionTitle(section_name):
-    """Fixed section title at bottom right"""
+def HeroSection(eyebrow="", title="", subtitle="", cta_text="", cta_href=""):
+    """Full-viewport hero with video background"""
+    hero_inner = []
+    if eyebrow:
+        hero_inner.append(Span(eyebrow, cls="hero-eyebrow"))
+    if title:
+        hero_inner.append(NotStr(f'<span class="hero-title">{title}</span>'))
+    if subtitle:
+        hero_inner.append(P(subtitle, cls="hero-subtitle"))
+    if cta_text:
+        hero_inner.append(
+            A(cta_text, href=cta_href, cls="hero-cta",
+              hx_get=cta_href, hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"))
+
     return Div(
-        P(section_name,
-          style="font-size: 64px; font-weight: 200; line-height: 1.1; color: white; margin: 0; text-transform: uppercase; letter-spacing: -0.08em;"),
-        cls="section-title"
+        NotStr(
+            f'<video class="hero-video" autoplay loop muted playsinline>'
+            f'<source src="{BG_VIDEO_PATH}" type="video/mp4">'
+            f'</video>'
+        ),
+        Div(cls="hero-overlay"),
+        Div(*hero_inner, cls="hero-content"),
+        NotStr('<div class="scroll-indicator"><span></span></div>'),
+        cls="hero-section"
     )
 
 
 def ContentArea(content, section_name=""):
-    """Inner content for partial HTMX swaps"""
+    """Inner content for non-home HTMX swaps"""
     return (
-        Div(*content, style="flex: 1; margin-top: 25px;"),
-        SectionTitle(section_name),
+        Div(H1(section_name, cls="page-header"), *content, cls="content-wrapper"),
         Footer(),
     )
 
 
-def TwoColumnLayout(current_page, content, section_name="", title=SITE_NAME):
-    """Standard two-column layout with vertical navbar and content area"""
-    left_nav = NavBar(current_page)
-
-    right_content = Div(
-        Div(*content, style="flex: 1; margin-top: 25px;"),
-        SectionTitle(section_name),
+def HomeContentArea(content, **hero_kwargs):
+    """Inner content for home HTMX swaps"""
+    return (
+        HeroSection(**hero_kwargs),
+        Div(*content, cls="content-wrapper"),
         Footer(),
-        style="flex: 1; padding: 40px; padding-right: 80px; padding-bottom: 120px; overflow-y: auto; display: flex; flex-direction: column; position: relative;",
-        cls="content-area",
-        id="content-area"
     )
 
-    bg_video = NotStr(
-        '<video autoplay loop muted playsinline '
-        f'style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:-1;">'
-        f'<source src="{BG_VIDEO_PATH}" type="video/mp4">'
-        '</video>'
+
+def PageLayout(current_page, content, section_name=""):
+    """Standard page: navbar + H1 + content + footer"""
+    return Div(
+        NavBar(current_page),
+        Div(
+            Div(H1(section_name, cls="page-header"), *content, cls="content-wrapper"),
+            Footer(),
+            id="content-area",
+        ),
     )
 
-    layout = Div(
-        bg_video,
-        left_nav,
-        right_content,
-        style="display: flex; height: 100vh; position: relative;",
-        cls="main-layout"
-    )
 
-    return layout
+def HomeLayout(current_page, content, **hero_kwargs):
+    """Home page: navbar + hero + content + footer"""
+    return Div(
+        NavBar(current_page),
+        Div(
+            HeroSection(**hero_kwargs),
+            Div(*content, cls="content-wrapper"),
+            Footer(),
+            id="content-area",
+        ),
+    )

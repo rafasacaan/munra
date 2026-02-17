@@ -1,0 +1,11 @@
+Mean squared error on raw waveforms is a terrible loss function for audio. Two signals can sound identical to human ears but have completely different MSE scores due to phase shifts.
+
+We've been comparing multi-resolution STFT loss, mel-spectrogram loss, and perceptual losses based on pre-trained audio classifiers. Each has tradeoffs:
+
+Multi-resolution STFT captures both fine temporal detail and broader spectral shape. It's our default now for most tasks.
+
+Mel-spectrogram loss aligns better with human perception but throws away phase information entirely. Good for evaluation, problematic as a sole training objective.
+
+Perceptual loss using features from a pre-trained classifier gives the most "natural" sounding results but can hallucinate timbral details that weren't in the input.
+
+In practice, we use a weighted combination of all three. The weights matter more than the individual losses.

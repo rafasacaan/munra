@@ -1,13 +1,19 @@
 """Main application file"""
 
 from fasthtml.common import *
+from starlette.responses import HTMLResponse
 
 from styles import GLOBAL_STYLES
-from layouts import TwoColumnLayout, ContentArea
+from layouts import PageLayout, HomeLayout, ContentArea, HomeContentArea
+from components import PostItem
+from rendering import render_post_body
 from utils import get_meta_tags, get_google_analytics
-from config import FONT_URL, SITE_NAME, FAVICON_PATH, CONTACT_EMAIL
+from config import (
+    FONT_URL, SITE_NAME, FAVICON_PATH,
+    HERO_EYEBROW, HERO_TITLE, HERO_SUBTITLE, HERO_CTA_TEXT, HERO_CTA_HREF,
+)
+from data.posts import get_posts, get_post_by_id, get_post_content
 
-# Initialize FastHTML app
 app, rt = fast_app(
     hdrs=(
         Link(rel="icon", type="image/jpeg", href=FAVICON_PATH),
@@ -27,69 +33,100 @@ app, rt = fast_app(
     )
 )
 
+HERO = dict(
+    eyebrow=HERO_EYEBROW,
+    title=HERO_TITLE,
+    subtitle=HERO_SUBTITLE,
+    cta_text=HERO_CTA_TEXT,
+    cta_href=HERO_CTA_HREF,
+)
 
-# Routes
+
 @rt("/")
 def get(request):
     """Home page"""
-    home_title = NotStr("Estudio de creación de audio<br>análogo y experimental .")
-    content = []
-    if request.headers.get("HX-Request"):
-        return ContentArea(content, home_title)
-    return Title(SITE_NAME), TwoColumnLayout("home", content, section_name=home_title)
-
-
-@rt("/grabaciones")
-def get(request):
-    """Grabaciones page"""
-    content = [P("Próximamente...", style="font-size: 18px; font-weight: 300; color: white;")]
-    if request.headers.get("HX-Request"):
-        return ContentArea(content, "Grabaciones")
-    return Title("Grabaciones - munra.cl"), TwoColumnLayout("grabaciones", content, section_name="Grabaciones")
-
-
-@rt("/notas")
-def get(request):
-    """Notas page"""
-    content = [P("Próximamente...", style="font-size: 18px; font-weight: 300; color: white;")]
-    if request.headers.get("HX-Request"):
-        return ContentArea(content, "Notas")
-    return Title("Notas - munra.cl"), TwoColumnLayout("notas", content, section_name="Notas")
-
-
-@rt("/maquinas")
-def get(request):
-    """Machines page"""
-    content = [P("Próximamente...", style="font-size: 18px; font-weight: 300; color: white;")]
-    if request.headers.get("HX-Request"):
-        return ContentArea(content, "Máquinas")
-    return Title("Máquinas - munra.cl"), TwoColumnLayout("máquinas", content, section_name="Máquinas")
-
-
-@rt("/contact")
-def get(request):
-    """Contact page"""
+    posts = get_posts()
     content = [
-        P(f"Escríbenos a {CONTACT_EMAIL.replace('@', ' at ')}",
-          style="font-size: 18px; font-weight: 300; color: white;"),
+        H2("Latest posts", style="font-size: 28px; font-weight: 300; color: white; margin: 0 0 20px 0; letter-spacing: normal;"),
+        *[PostItem(p) for p in posts],
     ]
     if request.headers.get("HX-Request"):
-        return ContentArea(content, "Contacto")
-    return Title(SITE_NAME), TwoColumnLayout("contact", content, section_name="Contacto")
+        return HomeContentArea(content, **HERO)
+    return Title(SITE_NAME), HomeLayout("home", content, **HERO)
+
+
+@rt("/blog")
+def get(request):
+    """Blog listing page"""
+    posts = get_posts()
+    content = [PostItem(p) for p in posts] or [P("No posts yet.", cls="text-placeholder")]
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, "Blog")
+    return Title(f"Blog - {SITE_NAME}"), PageLayout("blog", content, section_name="Blog")
+
+
+@rt("/blog/{post_id}")
+def get(request, post_id: str):
+    """Individual blog post"""
+    post = get_post_by_id(post_id)
+    if not post:
+        content = [P("Post not found.", cls="text-placeholder")]
+        if request.headers.get("HX-Request"):
+            return ContentArea(content, "Blog")
+        return Title(f"Blog - {SITE_NAME}"), PageLayout("blog", content, section_name="Blog")
+
+    content = [
+        A("\u2190 Back to blog", href="/blog", cls="post-back",
+          hx_get="/blog", hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"),
+        P(post['date'], cls="post-meta"),
+        *render_post_body(get_post_content(post_id)),
+    ]
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, post['title'])
+    return Title(f"{post['title']} - {SITE_NAME}"), PageLayout("blog", content, section_name=post['title'])
+
+
+@rt("/models")
+def get(request):
+    """Models page"""
+    content = [P("Coming soon...", cls="text-placeholder")]
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, "Models")
+    return Title(f"Models - {SITE_NAME}"), PageLayout("models", content, section_name="Models")
+
+
+@rt("/recordings")
+def get(request):
+    """Recordings page"""
+    content = [P("Coming soon...", cls="text-placeholder")]
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, "Recordings")
+    return Title(f"Recordings - {SITE_NAME}"), PageLayout("recordings", content, section_name="Recordings")
+
+
+@rt("/about")
+def get(request):
+    """About page"""
+    content = [
+        P("AI-driven audio research lab exploring the intersection of generative models and sound.",
+          cls="text-placeholder"),
+    ]
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, "About")
+    return Title(f"About - {SITE_NAME}"), PageLayout("about", content, section_name="About")
 
 
 @app.exception_handler(404)
 async def not_found(request, exc):
     """Custom 404 page"""
     content = [
-        P("La página que buscas no existe.",
-          style="font-size: 18px; font-weight: 300; color: white; margin-bottom: 30px;"),
-        A("← Volver al inicio", href="/",
+        P("The page you're looking for doesn't exist.", cls="text-placeholder",
+          style="margin-bottom: 30px;"),
+        A("\u2190 Back to home", href="/",
           style="color: white; text-decoration: underline; font-size: 16px;"),
     ]
+    page = (Title("404 - Page not found"), PageLayout("404", content, section_name="404"))
+    return HTMLResponse(to_xml(page), status_code=404)
 
-    return Title("404 - Página no encontrada"), TwoColumnLayout("404", content, section_name="404")
 
-
-# Start the server
 serve()
