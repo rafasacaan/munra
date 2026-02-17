@@ -1,0 +1,7 @@
+Diffusion models generate incredible audio but they're slow. A typical 4-second clip takes 30 seconds to render. That's fine for production, useless for performance.
+
+We've been experimenting with consistency distillation to bring the step count from 50 down to 4. The quality drops, but in a live context the artifacts become part of the texture — grainy, unstable, alive.
+
+The current prototype runs on a single GPU and generates 512ms chunks with ~80ms latency. Not zero, but workable if you lean into the delay as a musical element rather than fighting it.
+
+The interesting part: feeding the model its own output as a conditioning signal creates feedback loops that evolve over time. Leave it running and it drifts into unexpected territories.

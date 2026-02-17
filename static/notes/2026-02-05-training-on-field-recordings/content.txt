@@ -1,0 +1,9 @@
+Most audio ML research trains on clean, studio-recorded datasets. We wanted to see what happens when you train exclusively on field recordings — unprocessed, noisy, full of the world.
+
+The dataset: 400 hours of recordings made across Chile over the past two years. Markets, forests, rain on tin roofs, construction sites, empty churches, highway overpasses at 3am.
+
+Preprocessing was minimal by design. We applied only high-pass filtering at 20Hz and peak normalization. No denoising, no segmentation by "quality."
+
+Early results show the model develops an interesting sense of space. Generated samples have a dimensionality that clean-trained models lack. You can hear rooms, distances, surfaces.
+
+The failure modes are also more interesting — instead of generic artifacts, the model produces impossible spaces. A room that's simultaneously large and small. Rain that falls upward.

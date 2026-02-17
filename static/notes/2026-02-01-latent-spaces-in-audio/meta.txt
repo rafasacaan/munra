@@ -1,0 +1,3 @@
+Latent Spaces in Audio
+2026-02-01
+First explorations into navigating the latent space of audio representations.

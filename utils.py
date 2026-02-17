@@ -16,9 +16,9 @@ def get_meta_tags(title=None, description=None, image=None, url=None):
         Meta(charset="utf-8"),
         Meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=5.0"),
         Meta(name="description", content=page_description),
-        Meta(name="keywords", content="munra, notas, registros, análogo, música, máquinas"),
-        Meta(name="author", content="munra.cl"),
-        Meta(name="theme-color", content="#333333"),
+        Meta(name="keywords", content="munra, AI, audio, research, machine learning, sound, models"),
+        Meta(name="author", content="munra"),
+        Meta(name="theme-color", content="#000000"),
         
         # Open Graph / Facebook
         Meta(property="og:type", content="website"),
@@ -29,7 +29,7 @@ def get_meta_tags(title=None, description=None, image=None, url=None):
         Meta(property="og:image:width", content="1200"),
         Meta(property="og:image:height", content="630"),
         Meta(property="og:url", content=page_url),
-        Meta(property="og:locale", content="es_ES"),
+        Meta(property="og:locale", content="en_US"),
         
         # Twitter Card
         Meta(name="twitter:card", content="summary_large_image"),

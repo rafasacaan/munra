@@ -1,0 +1,60 @@
+Silence is not empty. In any recording, what we call silence carries room tone, electrical hum, the faintest vibrations of the world continuing to exist.
+
+We trained a small autoencoder on segments labeled as "silent" across 200 hours of field recordings. The architecture is minimal — a 1D convolutional encoder compressing 16kHz audio windows into a 32-dimensional latent vector.
+
+```python
+import torch
+import torch.nn as nn
+
+class SilenceEncoder(nn.Module):
+    def __init__(self, latent_dim=32):
+        super().__init__()
+        self.encoder = nn.Sequential(
+            nn.Conv1d(1, 64, kernel_size=7, stride=2, padding=3),
+            nn.ReLU(),
+            nn.Conv1d(64, 128, kernel_size=5, stride=2, padding=2),
+            nn.ReLU(),
+            nn.Conv1d(128, 256, kernel_size=3, stride=2, padding=1),
+            nn.ReLU(),
+            nn.AdaptiveAvgPool1d(1),
+            nn.Flatten(),
+            nn.Linear(256, latent_dim),
+        )
+
+    def forward(self, x):
+        return self.encoder(x)
+```
+
+Training converged quickly — around 80 epochs before the validation loss plateaued. We used a simple MSE reconstruction loss with a small KL divergence term.
+
+![Training loss over 200 epochs](/static/notes/2026-02-14-embedding-silence/loss-curve.svg)
+
+The latent space that emerged was surprisingly rich. We ran t-SNE on the embeddings and found clear clusters — indoor vs outdoor silence, morning vs night, urban vs rural.
+
+![Silence latent space — t-SNE projection](/static/notes/2026-02-14-embedding-silence/latent-space.svg)
+
+The model learned that silence has texture. A quiet room in Santiago is nothing like a quiet forest in the south. The embeddings capture something our ears already know but our tools have ignored.
+
+To extract and cluster the silence segments, we used a simple energy-threshold approach on the raw waveforms:
+
+```python
+def extract_silence(waveform, sr=16000, threshold=0.01, min_duration=0.5):
+    """Extract silence segments from a waveform."""
+    frame_length = int(sr * 0.025)
+    energy = waveform.unfold(0, frame_length, frame_length).pow(2).mean(-1)
+    is_silent = energy < threshold
+
+    segments = []
+    start = None
+    for i, silent in enumerate(is_silent):
+        if silent and start is None:
+            start = i
+        elif not silent and start is not None:
+            duration = (i - start) * frame_length / sr
+            if duration >= min_duration:
+                segments.append(waveform[start * frame_length:i * frame_length])
+            start = None
+    return segments
+```
+
+Next step: using these silence embeddings as conditioning signals for generation. What does a sound that "fits" a particular silence look like?

@@ -1,43 +1,51 @@
 """Reusable UI components"""
 
 from fasthtml.common import *
-from config import NAVBAR_WIDTH, LOGO_PATH, COPYRIGHT_TEXT, COLOR_GRAY
+from config import LOGO_PATH, COPYRIGHT_TEXT, COLOR_GRAY
 
 
 def NavBar(current_page="home"):
-    """Vertical navigation bar component"""
+    """Horizontal top navigation bar"""
     def nav_link(text, href, page_name):
-        is_active = current_page == page_name
-        style = "color: white; font-size: 18px; font-weight: 200; text-decoration: none; display: block; margin-bottom: 15px; position: relative; text-transform: uppercase;"
-        cls = "nav-link-active" if is_active else ""
-        return A(text, href=href, style=style, cls=cls,
+        cls = "nav-link-active" if current_page == page_name else ""
+        return A(text, href=href, cls=cls,
                  hx_get=href, hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true")
 
     return Nav(
         Div(
-            A(
-                Img(src=LOGO_PATH, alt="Munra Logo",
-                    style="width: 100%; max-width: 260px; display: block;"),
-                href="/"),
-            style="margin-bottom: 50px;"
+            A(Img(src=LOGO_PATH, alt="Munra Logo", cls="nav-logo"),
+              href="/", hx_get="/", hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"),
+            Div(
+                nav_link("Blog", "/blog", "blog"),
+                nav_link("Models", "/models", "models"),
+                nav_link("Recordings", "/recordings", "recordings"),
+                nav_link("About", "/about", "about"),
+                cls="nav-links",
+            ),
+            cls="nav-inner",
         ),
-        Div(
-            nav_link("grabaciones", "/grabaciones", "grabaciones"),
-            nav_link("notas", "/notas", "notas"),
-            nav_link("máquinas", "/maquinas", "máquinas"),
-            nav_link("contacto", "/contact", "contact"),
-            cls="nav-links",
-            style="margin-left: 17px;"
-        ),
-        style=f"padding: 30px; width: {NAVBAR_WIDTH}; display: flex; flex-direction: column;",
-        cls="vertical-nav"
+        cls="top-nav"
     )
 
 
 def Footer():
-    """Footer component with copyright"""
+    """Footer component"""
     return Div(
         P(COPYRIGHT_TEXT, style=f"margin: 0; color: {COLOR_GRAY};"),
-        style="font-size: 12px;",
         cls="footer"
+    )
+
+
+def PostItem(post):
+    """Reusable post list item for blog listing and home page"""
+    return A(
+        Div(
+            P(post['title'], cls="post-title"),
+            P(post['date'], cls="post-date"),
+            P(post['excerpt'], cls="post-excerpt"),
+            cls="post-item-inner",
+        ),
+        href=f"/blog/{post['id']}",
+        cls="post-item",
+        hx_get=f"/blog/{post['id']}", hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true",
     )
