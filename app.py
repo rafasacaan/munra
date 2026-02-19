@@ -5,13 +5,10 @@ from starlette.responses import HTMLResponse
 
 from styles import GLOBAL_STYLES
 from layouts import PageLayout, HomeLayout, ContentArea, HomeContentArea
-from components import PostItem
+from components import PostItem, FeaturedProject
 from rendering import render_post_body
 from utils import get_meta_tags, get_google_analytics
-from config import (
-    FONT_URL, SITE_NAME, FAVICON_PATH,
-    HERO_EYEBROW, HERO_TITLE, HERO_SUBTITLE, HERO_CTA_TEXT, HERO_CTA_HREF,
-)
+from config import FONT_URL, SITE_NAME, FAVICON_PATH, HERO_EYEBROW, HERO_TITLE
 from data.posts import get_posts, get_post_by_id, get_post_content
 
 app, rt = fast_app(
@@ -33,23 +30,25 @@ app, rt = fast_app(
     )
 )
 
-HERO = dict(
-    eyebrow=HERO_EYEBROW,
-    title=HERO_TITLE,
-    subtitle=HERO_SUBTITLE,
-    cta_text=HERO_CTA_TEXT,
-    cta_href=HERO_CTA_HREF,
-)
+HERO = dict(eyebrow=HERO_EYEBROW, title=HERO_TITLE)
 
 
 @rt("/")
 def get(request):
     """Home page"""
     posts = get_posts()
-    content = [
-        H2("Latest posts", style="font-size: 28px; font-weight: 300; color: white; margin: 0 0 20px 0; letter-spacing: normal;"),
-        *[PostItem(p) for p in posts],
-    ]
+    featured = posts[0] if posts else None
+    rest = posts[1:] if len(posts) > 1 else []
+
+    content = []
+    if featured:
+        content.append(FeaturedProject(featured))
+    if rest:
+        content.append(H2("Recent experiments", style="margin: 0 0 20px 0;"))
+        content.extend([PostItem(p) for p in rest])
+    elif not featured:
+        content.append(P("No experiments yet.", cls="text-placeholder"))
+
     if request.headers.get("HX-Request"):
         return HomeContentArea(content, **HERO)
     return Title(SITE_NAME), HomeLayout("home", content, **HERO)
@@ -61,8 +60,8 @@ def get(request):
     posts = get_posts()
     content = [PostItem(p) for p in posts] or [P("No posts yet.", cls="text-placeholder")]
     if request.headers.get("HX-Request"):
-        return ContentArea(content, "Blog")
-    return Title(f"Blog - {SITE_NAME}"), PageLayout("blog", content, section_name="Blog")
+        return ContentArea(content, "Experiments")
+    return Title(f"Experiments - {SITE_NAME}"), PageLayout("blog", content, section_name="Experiments")
 
 
 @rt("/blog/{post_id}")
@@ -72,11 +71,11 @@ def get(request, post_id: str):
     if not post:
         content = [P("Post not found.", cls="text-placeholder")]
         if request.headers.get("HX-Request"):
-            return ContentArea(content, "Blog")
-        return Title(f"Blog - {SITE_NAME}"), PageLayout("blog", content, section_name="Blog")
+            return ContentArea(content, "Experiments")
+        return Title(f"Experiments - {SITE_NAME}"), PageLayout("blog", content, section_name="Experiments")
 
     content = [
-        A("\u2190 Back to blog", href="/blog", cls="post-back",
+        A("\u2190 Back to experiments", href="/blog", cls="post-back",
           hx_get="/blog", hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"),
         P(post['date'], cls="post-meta"),
         *render_post_body(get_post_content(post_id)),
