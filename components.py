@@ -1,7 +1,7 @@
 """Reusable UI components"""
 
 from fasthtml.common import *
-from config import LOGO_PATH, COPYRIGHT_TEXT, COLOR_GRAY
+from config import LOGO_PATH, COPYRIGHT_TEXT, COLOR_TEXT_SEC
 
 
 def NavBar(current_page="home"):
@@ -16,7 +16,7 @@ def NavBar(current_page="home"):
             A(Img(src=LOGO_PATH, alt="Munra Logo", cls="nav-logo"),
               href="/", hx_get="/", hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"),
             Div(
-                nav_link("Blog", "/blog", "blog"),
+                nav_link("Experiments", "/blog", "blog"),
                 nav_link("Models", "/models", "models"),
                 nav_link("Recordings", "/recordings", "recordings"),
                 nav_link("About", "/about", "about"),
@@ -31,8 +31,21 @@ def NavBar(current_page="home"):
 def Footer():
     """Footer component"""
     return Div(
-        P(COPYRIGHT_TEXT, style=f"margin: 0; color: {COLOR_GRAY};"),
+        P(COPYRIGHT_TEXT, style=f"margin: 0; color: {COLOR_TEXT_SEC};"),
         cls="footer"
+    )
+
+
+def FeaturedProject(post):
+    """Featured latest project on the homepage"""
+    return Div(
+        P("Latest", cls="featured-label"),
+        P(post['title'], cls="featured-title"),
+        P(post['date'], cls="featured-date"),
+        P(post['excerpt'], cls="featured-excerpt"),
+        A("Read more \u2192", href=f"/blog/{post['id']}", cls="featured-link",
+          hx_get=f"/blog/{post['id']}", hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"),
+        cls="featured",
     )
 
 

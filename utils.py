@@ -18,7 +18,7 @@ def get_meta_tags(title=None, description=None, image=None, url=None):
         Meta(name="description", content=page_description),
         Meta(name="keywords", content="munra, AI, audio, research, machine learning, sound, models"),
         Meta(name="author", content="munra"),
-        Meta(name="theme-color", content="#000000"),
+        Meta(name="theme-color", content="#1A1714"),
         
         # Open Graph / Facebook
         Meta(property="og:type", content="website"),
