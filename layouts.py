@@ -5,23 +5,41 @@ from components import NavBar, Footer
 from config import BG_VIDEO_PATH
 
 
-def HeroSection(eyebrow="", title=""):
-    """Compact hero with video background"""
-    hero_inner = []
+def HeroSection(eyebrow="", title="", subtitle="", ctas=[]):
+    """Full-height typographic hero"""
+    top = []
     if eyebrow:
-        hero_inner.append(Span(eyebrow, cls="hero-eyebrow"))
+        top.append(Span(eyebrow, cls="hero-eyebrow"))
     if title:
-        hero_inner.append(NotStr(f'<span class="hero-title">{title}</span>'))
+        top.append(NotStr(f'<span class="hero-title">{title}</span>'))
+
+    cta_links = [
+        A(f"{text} →", href=href, cls="hero-cta",
+          hx_get=href, hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true")
+        for text, href in ctas
+    ]
+
+    bottom = Div(
+        Span(subtitle, cls="hero-subtitle") if subtitle else Span(),
+        Div(*cta_links, cls="hero-cta-group"),
+        cls="hero-bottom",
+    )
 
     return Div(
-        NotStr(
-            f'<video class="hero-video" autoplay loop muted playsinline>'
-            f'<source src="{BG_VIDEO_PATH}" type="video/mp4">'
-            f'</video>'
+        Div(
+            Div(
+                NotStr(f'<video autoplay muted loop playsinline class="hero-video"><source src="{BG_VIDEO_PATH}" type="video/mp4"></video>'),
+                Div(cls="hero-overlay"),
+                Div(
+                    Div(*top, cls="hero-top"),
+                    Div(Hr(cls="hero-rule"), bottom),
+                    cls="hero-text",
+                ),
+                cls="hero-video-wrap",
+            ),
+            cls="hero-content",
         ),
-        Div(cls="hero-overlay"),
-        Div(*hero_inner, cls="hero-content"),
-        cls="hero-section"
+        cls="hero-section",
     )
 
 
