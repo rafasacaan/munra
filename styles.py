@@ -1,10 +1,20 @@
 """Global styles for the application"""
 
+from pygments.formatters import HtmlFormatter as _HtmlFormatter
+PYGMENTS_CSS = _HtmlFormatter(style='default', cssclass='post-code').get_style_defs('.post-code')
+
 from config import (
     FONT_HEADING, FONT_BODY, FONT_MONO, NAVBAR_HEIGHT,
     COLOR_BG, COLOR_SURFACE, COLOR_SURFACE_ALT, COLOR_BORDER,
     COLOR_TEXT, COLOR_TEXT_SEC, COLOR_ACCENT, COLOR_ACCENT_SEC,
 )
+
+# Hero — light
+HERO_BG = "#FFFFFF"
+HERO_TEXT = "#FFFFFF"
+HERO_TEXT_SEC = "rgba(255,255,255,0.65)"
+HERO_BORDER = "rgba(255,255,255,0.25)"
+
 
 GLOBAL_STYLES = f"""
     :root {{
@@ -35,7 +45,7 @@ GLOBAL_STYLES = f"""
         top: 0; left: 0;
         width: 100%;
         height: {NAVBAR_HEIGHT};
-        background: #181818;
+        background: {COLOR_BG};
         z-index: 1000;
         display: flex;
         align-items: center;
@@ -73,137 +83,117 @@ GLOBAL_STYLES = f"""
     /* --- Content area --- */
     #content-area {{ padding-top: {NAVBAR_HEIGHT}; }}
 
-    /* --- Hero --- */
+    /* --- Hero (always dark, typographic) --- */
     .hero-section {{
-        position: relative;
-        width: 100%; height: 40vh;
-        min-height: 280px;
+        width: 100%;
         margin-top: -{NAVBAR_HEIGHT};
         padding-top: {NAVBAR_HEIGHT};
+        background: {HERO_BG};
+    }}
+    .hero-content {{
+        max-width: var(--site-max-width);
+        width: 100%;
+        margin: 0 auto;
+        padding: 40px var(--site-margin);
+    }}
+    .hero-video-wrap {{
+        position: relative;
+        width: 100%;
         overflow: hidden;
-        display: flex;
-        align-items: flex-end;
-        background: {COLOR_BG};
     }}
     .hero-video {{
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
+        width: 100%;
+        display: block;
+        aspect-ratio: 16/9;
         object-fit: cover;
-        z-index: 0;
     }}
     .hero-overlay {{
         position: absolute;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: linear-gradient(
-            to bottom,
-            {COLOR_BG} 0%, rgba(26,23,20,0.6) 20%,
-            transparent 40%,
-            rgba(26,23,20,0.6) 60%, {COLOR_BG} 100%
-        );
-        z-index: 1;
+        inset: 0;
+        background: rgba(0,0,0,0.42);
     }}
-    .hero-content {{
-        position: relative;
-        z-index: 2;
-        width: 100%;
-        max-width: var(--site-max-width);
-        margin: 0 auto;
-        padding: 60px var(--site-margin);
+    .hero-text {{
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 48px;
+        gap: 28px;
     }}
     .hero-eyebrow {{
         font-family: {FONT_MONO};
-        font-size: 13px;
+        font-size: 11px;
         font-weight: 400;
-        letter-spacing: 0.05em;
-        color: {COLOR_TEXT_SEC};
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: {HERO_TEXT_SEC};
         display: block;
         margin-bottom: 20px;
     }}
     .hero-title {{
         font-family: {FONT_HEADING};
-        font-size: 72px;
-        font-weight: 600;
-        line-height: 1.0;
-        letter-spacing: -0.02em;
-        color: {COLOR_TEXT};
-        display: inline-block;
+        font-size: 75px;
+        font-weight: 700;
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+        color: {HERO_TEXT};
+        display: block;
+    }}
+    .hero-rule {{
+        border: none;
+        border-top: 1px solid rgba(0,0,0,0.12);
+        margin: 0 0 28px 0;
+    }}
+    .hero-bottom {{
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 40px;
     }}
     .hero-subtitle {{
         font-family: {FONT_BODY};
-        font-size: 18px;
+        font-size: 14px;
         font-weight: 400;
-        color: {COLOR_TEXT_SEC};
-        margin: 24px 0 0;
-        line-height: 1.6;
+        color: {HERO_TEXT_SEC};
+        line-height: 1.55;
+        flex: 1;
+        max-width: 480px;
+        margin: 0;
     }}
-    .hero-ctas {{
+    .hero-cta-group {{
         display: flex;
-        gap: 16px;
-        margin-top: 30px;
-        flex-wrap: wrap;
+        gap: 32px;
+        flex-shrink: 0;
     }}
     .hero-cta {{
-        display: inline-block;
-        font-family: {FONT_HEADING};
-        padding: 12px 32px;
-        font-size: 14px;
-        font-weight: 500;
-        color: {COLOR_TEXT};
-        text-decoration: none;
-        letter-spacing: 0.05em;
-        border: 1px solid {COLOR_BORDER};
-        transition: border-color 0.3s, background 0.3s, color 0.3s;
-    }}
-    .hero-cta:hover {{
-        border-color: {COLOR_ACCENT};
-        color: {COLOR_ACCENT};
-        background: rgba(22,228,145,0.08);
-    }}
-    .scroll-indicator {{
-        position: absolute;
-        bottom: 30px; left: 50%;
-        transform: translateX(-50%);
-        z-index: 2;
-    }}
-    .scroll-indicator span {{
-        display: block;
-        width: 20px; height: 20px;
-        border-right: 2px solid {COLOR_BORDER};
-        border-bottom: 2px solid {COLOR_BORDER};
-        transform: rotate(45deg);
-        animation: scroll-bounce 2s infinite;
-    }}
-    @keyframes scroll-bounce {{
-        0%, 100% {{ opacity: 0.3; transform: rotate(45deg) translateY(0); }}
-        50%      {{ opacity: 1;   transform: rotate(45deg) translateY(8px); }}
-    }}
-
-    /* --- Home header --- */
-    .home-header {{
-        padding: 60px 0 40px;
-        border-bottom: 1px solid {COLOR_BORDER};
-        margin-bottom: 40px;
-    }}
-    .home-name {{
-        font-family: {FONT_HEADING};
-        font-size: 32px;
-        font-weight: 600;
-        color: {COLOR_TEXT};
-        margin: 0 0 8px 0;
-        letter-spacing: -0.02em;
-    }}
-    .home-descriptor {{
         font-family: {FONT_MONO};
-        font-size: 13px;
+        font-size: 12px;
+        font-weight: 400;
+        color: {HERO_TEXT};
+        text-decoration: none;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: color 0.2s;
+    }}
+    .hero-cta:hover {{ color: {COLOR_ACCENT}; }}
+
+    /* --- Section label (mono uppercase, replaces H2) --- */
+    .section-label {{
+        font-family: {FONT_MONO};
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
         color: {COLOR_TEXT_SEC};
-        margin: 0;
+        margin: 48px 0 16px 0;
+        display: block;
     }}
 
     /* --- Featured project --- */
     .featured {{
         padding: 40px 0;
+        border-top: 5px solid {COLOR_TEXT};
         border-bottom: 1px solid {COLOR_BORDER};
         margin-bottom: 40px;
     }}
@@ -239,11 +229,13 @@ GLOBAL_STYLES = f"""
     .featured-link {{
         font-family: {FONT_MONO};
         font-size: 13px;
-        color: {COLOR_ACCENT};
+        color: {COLOR_TEXT};
         text-decoration: none;
         transition: color 0.2s;
+        border-bottom: 1px solid {COLOR_TEXT};
+        padding-bottom: 1px;
     }}
-    .featured-link:hover {{ color: {COLOR_ACCENT_SEC}; }}
+    .featured-link:hover {{ color: {COLOR_TEXT_SEC}; border-color: {COLOR_TEXT_SEC}; }}
 
     /* --- Content wrapper --- */
     .content-wrapper {{
@@ -254,38 +246,45 @@ GLOBAL_STYLES = f"""
         position: relative;
         z-index: 1;
     }}
-    .page-header {{ margin-bottom: 40px; }}
+    .page-header {{
+        margin-bottom: 40px;
+        border-left: 5px solid {COLOR_TEXT};
+        padding-left: 20px;
+    }}
 
     /* --- Post elements --- */
     .post-item {{ text-decoration: none; display: block; }}
-    .post-item-inner {{ padding: 20px 0; border-bottom: 1px solid {COLOR_BORDER}; }}
-    .post-item:hover .post-item-inner {{ background: {COLOR_SURFACE}; }}
+    .post-item-inner {{ padding: 20px 0; border-bottom: 1px solid {COLOR_BORDER}; transition: background 0.15s; }}
+    .post-item:hover .post-item-inner {{ padding-left: 12px; }}
     .post-title {{ font-family: {FONT_HEADING}; font-size: 20px; font-weight: 500; color: {COLOR_TEXT}; margin: 0 0 4px 0; }}
     .post-date {{ font-family: {FONT_MONO}; font-size: 13px; font-weight: 400; color: {COLOR_TEXT_SEC}; margin: 0 0 6px 0; }}
     .post-excerpt {{ font-size: 15px; font-weight: 400; color: {COLOR_TEXT_SEC}; margin: 0; }}
     .post-body {{ font-size: 17px; font-weight: 400; color: {COLOR_TEXT}; line-height: 1.65; margin-bottom: 16px; }}
     .post-back {{
         font-family: {FONT_MONO};
-        color: {COLOR_ACCENT};
+        color: {COLOR_TEXT};
         text-decoration: none;
         font-size: 13px;
         display: inline-block;
         margin-bottom: 24px;
-        transition: color 0.2s;
+        border-bottom: 1px solid {COLOR_BORDER};
+        padding-bottom: 1px;
+        transition: color 0.2s, border-color 0.2s;
     }}
-    .post-back:hover {{ color: {COLOR_ACCENT_SEC}; }}
+    .post-back:hover {{ color: {COLOR_TEXT_SEC}; border-color: {COLOR_TEXT_SEC}; }}
     .post-meta {{ font-family: {FONT_MONO}; font-size: 13px; font-weight: 400; color: {COLOR_TEXT_SEC}; margin-bottom: 24px; }}
 
     .code-block {{
         margin: 24px 0;
-        background: {COLOR_SURFACE};
+        background: #F5F5F5;
         border: 1px solid {COLOR_BORDER};
-        border-radius: 4px;
+        border-radius: 0;
         overflow-x: auto;
     }}
     .post-code {{
         padding: 20px 24px;
         margin: 0;
+        background: #F5F5F5;
         font-size: 13px;
         line-height: 1.6;
         color: {COLOR_TEXT};
@@ -293,7 +292,7 @@ GLOBAL_STYLES = f"""
         white-space: pre;
     }}
     .post-figure {{ margin: 32px 0; text-align: center; }}
-    .post-img {{ max-width: 100%; border-radius: 4px; border: 1px solid {COLOR_BORDER}; }}
+    .post-img {{ max-width: 100%; border-radius: 0; border: 1px solid {COLOR_BORDER}; }}
     .post-caption {{ font-family: {FONT_MONO}; font-size: 12px; color: {COLOR_TEXT_SEC}; margin-top: 8px; }}
 
     /* --- Footer --- */
@@ -304,15 +303,15 @@ GLOBAL_STYLES = f"""
         font-family: {FONT_MONO};
         font-size: 12px;
         color: {COLOR_TEXT_SEC};
-        border-top: 1px solid {COLOR_BORDER};
+        border-top: 5px solid {COLOR_TEXT};
     }}
 
     /* --- Placeholder text --- */
     .text-placeholder {{ font-size: 17px; font-weight: 400; color: {COLOR_TEXT}; }}
 
     /* --- Links --- */
-    a {{ color: {COLOR_ACCENT}; }}
-    a:hover {{ color: {COLOR_ACCENT_SEC}; }}
+    a {{ color: {COLOR_TEXT}; }}
+    a:hover {{ color: {COLOR_TEXT_SEC}; }}
 
     /* --- Responsive: tablet --- */
     @media (max-width: 768px) {{
@@ -322,9 +321,9 @@ GLOBAL_STYLES = f"""
         .nav-logo {{ height: 48px; }}
         .nav-links {{ gap: 20px; }}
         .nav-links a {{ font-size: 14px !important; }}
-        .hero-eyebrow {{ font-size: 12px !important; }}
+        .hero-content {{ padding: 24px var(--site-margin); }}
+        .hero-text {{ padding: 32px; gap: 20px; }}
         .hero-title {{ font-size: 48px !important; }}
-        .hero-subtitle {{ font-size: 16px; }}
         .post-code {{ padding: 16px; font-size: 12px; }}
     }}
 
@@ -335,10 +334,12 @@ GLOBAL_STYLES = f"""
         .nav-logo {{ height: 36px; }}
         .nav-links {{ gap: 12px; }}
         .nav-links a {{ font-size: 12px !important; }}
-        .hero-eyebrow {{ font-size: 11px !important; margin-bottom: 12px !important; }}
-        .hero-title {{ font-size: 32px !important; }}
-        .hero-subtitle {{ font-size: 14px; margin-top: 14px; }}
-        .hero-cta {{ padding: 10px 24px; font-size: 12px; }}
+        .hero-content {{ padding: 16px var(--site-margin); }}
+        .hero-video {{ aspect-ratio: 4/3; }}
+        .hero-text {{ padding: 20px; gap: 16px; }}
+        .hero-title {{ font-size: 28px !important; line-height: 1.0 !important; }}
+        .hero-bottom {{ flex-direction: column; align-items: flex-start; gap: 16px; }}
+        .hero-cta-group {{ gap: 16px; }}
         .post-code {{ padding: 12px; font-size: 11px; }}
     }}
 """

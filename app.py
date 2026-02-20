@@ -3,19 +3,19 @@
 from fasthtml.common import *
 from starlette.responses import HTMLResponse
 
-from styles import GLOBAL_STYLES
+from styles import GLOBAL_STYLES, PYGMENTS_CSS
 from layouts import PageLayout, HomeLayout, ContentArea, HomeContentArea
 from components import PostItem, FeaturedProject
 from rendering import render_post_body
 from utils import get_meta_tags, get_google_analytics
-from config import FONT_URL, SITE_NAME, FAVICON_PATH, HERO_EYEBROW, HERO_TITLE
+from config import FONT_URL, SITE_NAME, FAVICON_PATH, HERO_EYEBROW, HERO_TITLE, HERO_SUBTITLE, HERO_CTAS
 from data.posts import get_posts, get_post_by_id, get_post_content
 
 app, rt = fast_app(
     hdrs=(
         Link(rel="icon", type="image/jpeg", href=FAVICON_PATH),
         Link(rel="stylesheet", href=FONT_URL),
-        Style(GLOBAL_STYLES),
+        Style(GLOBAL_STYLES + PYGMENTS_CSS),
         *get_meta_tags(),
         *get_google_analytics(),
         Script("""
@@ -30,7 +30,7 @@ app, rt = fast_app(
     )
 )
 
-HERO = dict(eyebrow=HERO_EYEBROW, title=HERO_TITLE)
+HERO = dict(eyebrow=HERO_EYEBROW, title=HERO_TITLE, subtitle=HERO_SUBTITLE, ctas=HERO_CTAS)
 
 
 @rt("/")
@@ -44,7 +44,7 @@ def get(request):
     if featured:
         content.append(FeaturedProject(featured))
     if rest:
-        content.append(H2("Recent experiments", style="margin: 0 0 20px 0;"))
+        content.append(Div("Experiments", cls="section-label"))
         content.extend([PostItem(p) for p in rest])
     elif not featured:
         content.append(P("No experiments yet.", cls="text-placeholder"))
