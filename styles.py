@@ -5,8 +5,8 @@ PYGMENTS_CSS = _HtmlFormatter(style='default', cssclass='post-code').get_style_d
 
 from config import (
     FONT_HEADING, FONT_BODY, FONT_MONO, NAVBAR_HEIGHT,
-    COLOR_BG, COLOR_SURFACE, COLOR_SURFACE_ALT, COLOR_BORDER,
-    COLOR_TEXT, COLOR_TEXT_SEC, COLOR_ACCENT, COLOR_ACCENT_SEC,
+    COLOR_BG, COLOR_SURFACE, COLOR_BORDER,
+    COLOR_TEXT, COLOR_TEXT_SEC, COLOR_ACCENT,
 )
 
 # Hero — light
@@ -151,16 +151,6 @@ GLOBAL_STYLES = f"""
         align-items: flex-end;
         gap: 40px;
     }}
-    .hero-subtitle {{
-        font-family: {FONT_BODY};
-        font-size: 14px;
-        font-weight: 400;
-        color: {HERO_TEXT_SEC};
-        line-height: 1.55;
-        flex: 1;
-        max-width: 480px;
-        margin: 0;
-    }}
     .hero-cta-group {{
         display: flex;
         gap: 32px;
@@ -260,6 +250,9 @@ GLOBAL_STYLES = f"""
     .post-date {{ font-family: {FONT_MONO}; font-size: 13px; font-weight: 400; color: {COLOR_TEXT_SEC}; margin: 0 0 6px 0; }}
     .post-excerpt {{ font-size: 15px; font-weight: 400; color: {COLOR_TEXT_SEC}; margin: 0; }}
     .post-body {{ font-size: 17px; font-weight: 400; color: {COLOR_TEXT}; line-height: 1.65; margin-bottom: 16px; }}
+    .post-h2 {{ font-family: {FONT_HEADING}; font-size: 20px; font-weight: 600; color: {COLOR_TEXT}; margin: 36px 0 10px 0; }}
+    .post-h3 {{ font-family: {FONT_HEADING}; font-size: 17px; font-weight: 600; color: {COLOR_TEXT}; margin: 28px 0 8px 0; }}
+    .post-list {{ font-size: 17px; color: {COLOR_TEXT}; line-height: 1.65; margin: 0 0 16px 0; padding-left: 20px; }}
     .post-back {{
         font-family: {FONT_MONO};
         color: {COLOR_TEXT};
@@ -308,6 +301,35 @@ GLOBAL_STYLES = f"""
 
     /* --- Placeholder text --- */
     .text-placeholder {{ font-size: 17px; font-weight: 400; color: {COLOR_TEXT}; }}
+    .wip-badge {{
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: {FONT_MONO};
+        font-size: 11px;
+        font-weight: 400;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: {COLOR_TEXT_SEC};
+        background: {COLOR_SURFACE};
+        border: 1px solid {COLOR_BORDER};
+        padding: 6px 14px;
+        border-radius: 100px;
+    }}
+    .wip-badge::before {{
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: {COLOR_TEXT_SEC};
+        animation: wip-pulse 2s ease-in-out infinite;
+        flex-shrink: 0;
+    }}
+    @keyframes wip-pulse {{
+        0%, 100% {{ opacity: 1; }}
+        50% {{ opacity: 0.2; }}
+    }}
 
     /* --- Links --- */
     a {{ color: {COLOR_TEXT}; }}

@@ -5,7 +5,7 @@ from components import NavBar, Footer
 from config import BG_VIDEO_PATH
 
 
-def HeroSection(eyebrow="", title="", subtitle="", ctas=[]):
+def HeroSection(eyebrow="", title="", ctas=[]):
     """Full-height typographic hero"""
     top = []
     if eyebrow:
@@ -20,7 +20,6 @@ def HeroSection(eyebrow="", title="", subtitle="", ctas=[]):
     ]
 
     bottom = Div(
-        Span(subtitle, cls="hero-subtitle") if subtitle else Span(),
         Div(*cta_links, cls="hero-cta-group"),
         cls="hero-bottom",
     )

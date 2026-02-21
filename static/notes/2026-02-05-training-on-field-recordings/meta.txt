@@ -1,3 +1,0 @@
-Training on Field Recordings
-2026-02-05
-Notes on building a dataset from raw environmental audio.
