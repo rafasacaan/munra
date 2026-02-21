@@ -1,3 +1,0 @@
-Embedding Silence
-2026-02-14
-What happens when you train a model on the absence of sound?

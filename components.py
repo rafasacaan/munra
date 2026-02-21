@@ -17,8 +17,7 @@ def NavBar(current_page="home"):
               href="/", hx_get="/", hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"),
             Div(
                 nav_link("Experiments", "/blog", "blog"),
-                nav_link("Models", "/models", "models"),
-                nav_link("Recordings", "/recordings", "recordings"),
+                nav_link("Approach", "/approach", "approach"),
                 nav_link("About", "/about", "about"),
                 cls="nav-links",
             ),
