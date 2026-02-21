@@ -5,8 +5,8 @@ PYGMENTS_CSS = _HtmlFormatter(style='default', cssclass='post-code').get_style_d
 
 from config import (
     FONT_HEADING, FONT_BODY, FONT_MONO, NAVBAR_HEIGHT,
-    COLOR_BG, COLOR_SURFACE, COLOR_SURFACE_ALT, COLOR_BORDER,
-    COLOR_TEXT, COLOR_TEXT_SEC, COLOR_ACCENT, COLOR_ACCENT_SEC,
+    COLOR_BG, COLOR_SURFACE, COLOR_BORDER,
+    COLOR_TEXT, COLOR_TEXT_SEC, COLOR_ACCENT,
 )
 
 # Hero — light
@@ -150,16 +150,6 @@ GLOBAL_STYLES = f"""
         justify-content: space-between;
         align-items: flex-end;
         gap: 40px;
-    }}
-    .hero-subtitle {{
-        font-family: {FONT_BODY};
-        font-size: 14px;
-        font-weight: 400;
-        color: {HERO_TEXT_SEC};
-        line-height: 1.55;
-        flex: 1;
-        max-width: 480px;
-        margin: 0;
     }}
     .hero-cta-group {{
         display: flex;
