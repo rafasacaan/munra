@@ -100,6 +100,7 @@ GLOBAL_STYLES = f"""
         position: relative;
         width: 100%;
         overflow: hidden;
+        max-height: 55vh;
     }}
     .hero-video {{
         width: 100%;
@@ -133,10 +134,10 @@ GLOBAL_STYLES = f"""
     }}
     .hero-title {{
         font-family: {FONT_HEADING};
-        font-size: 75px;
-        font-weight: 700;
-        line-height: 0.95;
-        letter-spacing: -0.03em;
+        font-size: 48px;
+        font-weight: 300;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
         color: {HERO_TEXT};
         display: block;
     }}
@@ -331,12 +332,41 @@ GLOBAL_STYLES = f"""
         50% {{ opacity: 0.2; }}
     }}
 
+    /* --- Home intro two-column --- */
+    .home-intro {{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+        margin-bottom: 40px;
+    }}
+    .home-intro-text .post-body {{ margin-bottom: 16px; }}
+    .stat-grid {{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }}
+    .stat-badge {{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: {FONT_MONO};
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 12px 0;
+        border-bottom: 3px solid {COLOR_TEXT};
+    }}
+    .stat-label {{ color: {COLOR_TEXT_SEC}; }}
+    .stat-value {{ color: {COLOR_TEXT}; font-weight: 600; }}
+
     /* --- Links --- */
     a {{ color: {COLOR_TEXT}; }}
     a:hover {{ color: {COLOR_TEXT_SEC}; }}
 
     /* --- Responsive: tablet --- */
     @media (max-width: 768px) {{
+        .home-intro {{ grid-template-columns: 1fr; gap: 32px; }}
         html, body {{ overflow-x: hidden; }}
         h1 {{ font-size: 36px; }}
         h2 {{ font-size: 28px; }}
@@ -345,7 +375,7 @@ GLOBAL_STYLES = f"""
         .nav-links a {{ font-size: 14px !important; }}
         .hero-content {{ padding: 24px var(--site-margin); }}
         .hero-text {{ padding: 32px; gap: 20px; }}
-        .hero-title {{ font-size: 48px !important; }}
+        .hero-title {{ font-size: 36px !important; }}
         .post-code {{ padding: 16px; font-size: 12px; }}
     }}
 
@@ -359,7 +389,7 @@ GLOBAL_STYLES = f"""
         .hero-content {{ padding: 16px var(--site-margin); }}
         .hero-video {{ aspect-ratio: 4/3; }}
         .hero-text {{ padding: 20px; gap: 16px; }}
-        .hero-title {{ font-size: 28px !important; line-height: 1.0 !important; }}
+        .hero-title {{ font-size: 22px !important; line-height: 1.1 !important; }}
         .hero-bottom {{ flex-direction: column; align-items: flex-start; gap: 16px; }}
         .hero-cta-group {{ gap: 16px; }}
         .post-code {{ padding: 12px; font-size: 11px; }}

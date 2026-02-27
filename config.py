@@ -34,10 +34,10 @@ STATIC_NOTES_PATH = "static/notes"
 
 # Hero content
 HERO_EYEBROW = "Building generative audio models for creative use"
-HERO_TITLE = "Training tiny models to generate drums, voice and textures for music tracks"
+HERO_TITLE = "Training tiny models to generate drums, voice, and textures.<br>Publishing samples, models, and experiments."
 HERO_CTAS = [
     ("What we're learning", "/blog"),
-    ("Our approach", "/approach"),
+    ("Samples", "/samples"),
 ]
 
 # Analytics
