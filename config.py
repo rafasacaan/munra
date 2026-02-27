@@ -16,7 +16,7 @@ NAVBAR_HEIGHT = "70px"
 FONT_HEADING = "'Space Grotesk', sans-serif"
 FONT_BODY = "'Source Serif 4', Georgia, serif"
 FONT_MONO = "'Space Mono', monospace"
-FONT_URL = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap"
+FONT_URL = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Source+Serif+4:ital,wght@0,300;0,400;1,400&family=Space+Mono:wght@400&display=swap"
 
 # Colors — "Clean Minimal" palette
 COLOR_BG = "#FFFFFF"           # White — page canvas
@@ -27,17 +27,18 @@ COLOR_TEXT = "#1A1714"         # Near-Black — body text
 COLOR_ACCENT = "#1A1714"       # Near-Black — active states
 
 # Paths
-LOGO_PATH = "/static/imgs/munra-white.png"
-BG_VIDEO_PATH = "/static/videos/munra-v2-web.mp4"
+LOGO_PATH = "/static/imgs/logos/munra-white.png"
+BG_VIDEO_PATH = "/static/videos/munra-v4-web-audio.mp4"
 FAVICON_PATH = "/static/imgs/munra.jpg"
 STATIC_NOTES_PATH = "static/notes"
 
 # Hero content
 HERO_EYEBROW = "Building generative audio models for creative use"
-HERO_TITLE = "Training tiny models to generate drums, voice and textures for music tracks"
+HERO_TITLE = "Training tiny models to generate drums, voice, and textures.<br>Publishing samples, models, and experiments."
 HERO_CTAS = [
+    ("Samples", "/samples"),
+    ("Modelos", "/models"),
     ("What we're learning", "/blog"),
-    ("Our approach", "/approach"),
 ]
 
 # Analytics

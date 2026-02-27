@@ -13,6 +13,8 @@ from data.posts import get_posts, get_post_by_id, get_post_content
 
 app, rt = fast_app(
     hdrs=(
+        Link(rel="preconnect", href="https://fonts.googleapis.com"),
+        Link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin=""),
         Link(rel="icon", type="image/jpeg", href=FAVICON_PATH),
         Link(rel="stylesheet", href=FONT_URL),
         Style(GLOBAL_STYLES + PYGMENTS_CSS),
@@ -47,7 +49,22 @@ def get(request):
         content.append(Div("Experiments", cls="section-label"))
         content.extend([PostItem(p) for p in rest])
     elif not featured:
-        content.append(Span("Work in progress", cls="wip-badge"))
+        content.append(
+            Div(
+                Div(
+                    P(Span("MUNRA", cls="highlighter"), " started in February 2026 as a way to learn audio ML by doing it. Instead of just reading papers, I'm training tiny models from scratch—recording samples, building codecs, documenting every step.", cls="post-body"),
+                    P("The goal: create generative tools for my own experimental music, and share the entire process openly. Samples, models, failures, and insights—all public.", cls="post-body"),
+                    cls="home-intro-text",
+                ),
+                Div(
+                    Div(Span("Samples recorded", cls="stat-label"), Span("120", cls="stat-value"), cls="stat-badge"),
+                    Div(Span("Models trained", cls="stat-label"), Span("0", cls="stat-value"), cls="stat-badge"),
+                    Div(Span("Experiments", cls="stat-label"), Span("0", cls="stat-value"), cls="stat-badge"),
+                    cls="stat-grid",
+                ),
+                cls="home-intro",
+            )
+        )
 
     if request.headers.get("HX-Request"):
         return HomeContentArea(content, **HERO)
@@ -57,8 +74,33 @@ def get(request):
 @rt("/blog")
 def get(request):
     """Blog listing page"""
-    posts = get_posts()
-    content = [PostItem(p) for p in posts] or [Span("Work in progress", cls="wip-badge")]
+    content = [
+        P("Documenting the complete process of building generative audio models from scratch. Every experiment, success, and failure.", cls="post-body"),
+
+        Div(
+            Div(
+                P("Experiment #001", cls="produce-card-title"),
+                P("Audio Compression — Building a neural audio codec to represent sound as discrete tokens.", cls="produce-card-desc"),
+                P("Active — 40% complete", cls="produce-card-status"),
+            cls="produce-card"),
+            Div(
+                P("Experiment #002", cls="produce-card-title"),
+                P("Perceptual Loss Functions — Exploring loss functions that optimize for human perception.", cls="produce-card-desc"),
+                P("Planned", cls="produce-card-status"),
+            cls="produce-card"),
+            Div(
+                P("Experiment #003", cls="produce-card-title"),
+                P("Vector Quantization — Discrete representation of audio for generative modeling.", cls="produce-card-desc"),
+                P("Planned", cls="produce-card-status"),
+            cls="produce-card"),
+            Div(
+                P("Experiment #004", cls="produce-card-title"),
+                P("Hierarchical Representation — Multi-scale audio encoding for richer generation.", cls="produce-card-desc"),
+                P("Planned", cls="produce-card-status"),
+            cls="produce-card"),
+            cls="produce-grid",
+        ),
+    ]
     if request.headers.get("HX-Request"):
         return ContentArea(content, "Experiments")
     return Title(f"Experiments - {SITE_NAME}"), PageLayout("blog", content, section_name="Experiments")
@@ -85,88 +127,136 @@ def get(request, post_id: str):
     return Title(f"{post['title']} - {SITE_NAME}"), PageLayout("blog", content, section_name=post['title'])
 
 
-@rt("/approach")
+@rt("/samples")
 def get(request):
-    """Approach page"""
+    """Samples page"""
     content = [
-        P("MUNRA builds tiny AI models that generate audio—drum loops, spoken word, synth pads—for experimental music production.", cls="post-body"),
+        P(Span("MUNRA", cls="highlighter"), " builds a library of unique audio samples recorded specifically for training generative models. All samples are also available for direct use in music production.", cls="post-body"),
 
-        H3("How It Works", cls="post-h3"),
-        P('Think of it like teaching a neural network the "language" of audio:', cls="post-body"),
+        Div(
+            *[Div(Img(src=f"/static/imgs/machines/{name}", alt=name.replace("machines-", "").replace(".jpg", ""), loading="lazy"), cls="machines-grid-item")
+              for name in [
+                "machines-pedals.jpg", "machines-tascam-digi.jpg", "machines-808.jpg",
+                "machines-tascam-4track.jpg", "machines-walkmans.jpg", "machines-sony-1track.jpg",
+                "machines-cassettes.jpg", "machines-jhs.jpg", "machines-synths.jpg",
+                "machines-mics.jpg", "machines-keys.jpg",
+              ]],
+            cls="machines-grid",
+        ),
 
+        Div(
+            Div(
+                H2("Recording Philosophy", cls="post-h2"),
+                P('Unlike commercial sample libraries that aim for "perfection," these samples embrace imperfection: room tone, analog character, timing inconsistencies.', cls="post-body"),
+                P("Every sample is:", cls="post-body"),
+                Ul(
+                    Li("Recorded by hand"),
+                    Li("Documented with metadata"),
+                    Li("Used to train our models"),
+                    Li("Free to use with attribution"),
+                    cls="post-list",
+                ),
+
+                H2("Download", cls="post-h2"),
+                P("Coming Soon — First pack releasing March 2026", cls="post-body"),
+
+            ),
+            Div(
+                H2("Current Library", cls="post-h2"),
+                P(Strong("Status:"), " In progress (target: 2,000+)", cls="post-body"),
+                P(Strong("License:"), " CC-BY 4.0", cls="post-body"),
+                P(Strong("Format:"), " WAV, 48kHz, 24-bit", cls="post-body"),
+
+                H3("Categories", cls="post-h3"),
+                P(Strong("Drums"), " (coming soon)", cls="post-body"),
+                P(Strong("Voice"), " (coming soon)", cls="post-body"),
+                P(Strong("Synths"), " (coming soon)", cls="post-body"),
+            ),
+            cls="home-intro",
+        ),
+    ]
+    if request.headers.get("HX-Request"):
+        return ContentArea(content, "Samples")
+    return Title(f"Samples - {SITE_NAME}"), PageLayout("samples", content, section_name="Samples")
+
+
+@rt("/models")
+def get(request):
+    """Models page"""
+    content = [
+        P(Span("MUNRA", cls="highlighter"), " trains tiny neural networks (<50M params) to generate audio for creative music production.", cls="post-body"),
+
+        H2("Philosophy", cls="post-h2"),
+        P("Most audio AI optimizes for perfection. ", Span("MUNRA", cls="highlighter"), " optimizes for character:", cls="post-body"),
         Ul(
-            Li(Strong("Step 1: Learn to compress"), " — First, the model learns to compress audio efficiently. Take a 4-second drum loop (64,000 numbers) and represent it as just 50 tokens. This makes generation possible on small models."),
-            Li(Strong("Step 2: Learn to generate"), ' — Train a small AI to predict what comes next, like autocomplete for audio. Feed it thousands of drum loops until it learns patterns: "kick usually lands here, snare goes there."'),
-            Li(Strong("Step 3: Add control"), ' — Give it instructions via text prompts. "Boom bap" or "fast hats" guides what it generates, like describing a sound to a collaborator.'),
+            Li("Lo-fi aesthetic (tape, vinyl, imperfection)"),
+            Li("Tiny models (trainable on single GPU)"),
+            Li("Open source (models, weights, training process)"),
             cls="post-list",
         ),
 
-        H3("The Philosophy", cls="post-h3"),
-        P("Most AI audio tools aim for perfection: pristine, studio-quality output. MUNRA does the opposite.", cls="post-body"),
-        P("It's trained on lo-fi recordings with tape hiss, vinyl crackle, imperfect timing—the qualities that make music feel human. The goal isn't to replace musicians, but to create unique building blocks for creative work.", cls="post-body"),
+        H2("Planned Models", cls="post-h2"),
 
-        H3("What You Get", cls="post-h3"),
-        P("Short samples (4-8 seconds): drum patterns, vocal textures, synth drones. Not complete songs. Not production-ready polish. Raw material for your own creative process.", cls="post-body"),
-        P("Everything is documented publicly—the successes, the failures, the iterations.", cls="post-body"),
+        Div(
+            Div(
+                P("Drummer", cls="produce-card-title"),
+                P("Generates drum loops and percussion. Trained on found sounds and acoustic objects.", cls="produce-card-desc"),
+                P("Work in progress — ~20M params", cls="produce-card-status"),
+            cls="produce-card"),
+            Div(
+                P("Voice Reciter", cls="produce-card-title"),
+                P("Generates spoken word and vocal textures. Trained on recitations and phonemes.", cls="produce-card-desc"),
+                P("Work in progress — ~28M params", cls="produce-card-status"),
+            cls="produce-card"),
+            Div(
+                P("Drone Generator", cls="produce-card-title"),
+                P("Generates pads and evolving textures. Trained on synths and guitar feedback.", cls="produce-card-desc"),
+                P("Work in progress — ~22M params", cls="produce-card-status"),
+            cls="produce-card"),
+            cls="produce-grid",
+        ),
+
+        H2("Follow Progress", cls="post-h2"),
+        P("Each model's development is documented in experiments.", cls="post-body"),
+        A("View experiments →", href="/blog", cls="featured-link",
+          hx_get="/blog", hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"),
     ]
     if request.headers.get("HX-Request"):
-        return ContentArea(content, "Approach")
-    return Title(f"Approach - {SITE_NAME}"), PageLayout("approach", content, section_name="Approach")
+        return ContentArea(content, "Models")
+    return Title(f"Models - {SITE_NAME}"), PageLayout("models", content, section_name="Models")
 
 
 @rt("/about")
 def get(request):
     """About page"""
     content = [
-        P("MUNRA is a personal research project exploring generative audio models.", cls="post-body"),
+        P(Span("MUNRA", cls="highlighter"), " is a personal audio ML research lab exploring generative models for creative music production.", cls="post-body"),
 
-        H2("What I'm Building", cls="post-h2"),
-        P("Tiny neural networks (<50M parameters) that generate:", cls="post-body"),
-        Ul(
-            Li("Drum loops and percussion"),
-            Li("Spoken word / recited voice"),
-            Li("Synth pads and drones"),
-            cls="post-list",
-        ),
-        P("Not for production use. For creative experimentation.", cls="post-body"),
+        H2("What We Produce", cls="post-h2"),
 
-        H2('Why "Tiny"?', cls="post-h2"),
-        Ul(
-            Li("I can train them on a single GPU in days, not weeks."),
-            Li("I can understand every part of the architecture."),
-            Li("I can iterate quickly."),
-            cls="post-list",
-        ),
-
-        H2('Why "Imperfect"?', cls="post-h2"),
-        P("The best music has character: tape hiss, timing drift, vinyl crackle. I'm training models on lo-fi, vintage, human sounds—not pristine studio recordings.", cls="post-body"),
-
-        H2("What This Isn't", cls="post-h2"),
-        Ul(
-            Li("Not a product (no API, no VST plugin)"),
-            Li("Not competing with Suno/MusicGen"),
-            Li("Not generating complete songs"),
-            cls="post-list",
+        Div(
+            Div(
+                P("Audio Samples & Loops", cls="produce-card-title"),
+                P("A growing library of unique recordings: drums, voice, and synths. Used for training models and available for direct use.", cls="produce-card-desc"),
+                P("In progress — Target: 2,000+", cls="produce-card-status"),
+            cls="produce-card"),
+            Div(
+                P("Generative Models", cls="produce-card-title"),
+                P("Tiny neural networks (<50M params) that generate drums, voice, and textures. Trained on our sample library, optimized for lo-fi aesthetic.", cls="produce-card-desc"),
+                P("In development — First model: June 2026", cls="produce-card-status"),
+            cls="produce-card"),
+            Div(
+                P("Documented Process", cls="produce-card-title"),
+                P("Every experiment is documented publicly: architecture decisions, failures, breakthroughs, insights. Complete transparency.", cls="produce-card-desc"),
+                P("Experiment #001 in progress", cls="produce-card-status"),
+            cls="produce-card"),
+            cls="produce-grid",
         ),
 
-        H2("What This Is", cls="post-h2"),
-        Ul(
-            Li("Building blocks for experimental music"),
-            Li("Personal learning journey documented publicly"),
-            Li("Open research (code, models, failures)"),
-            cls="post-list",
-        ),
+        H2("Why This Approach", cls="post-h2"),
+        P("Most audio AI optimizes for perfection: pristine, studio-quality output. ", Span("MUNRA", cls="highlighter"), " does the opposite.", cls="post-body"),
+        P("We train on imperfect, characterful audio: tape hiss, vinyl crackle, timing drift. The goal isn't to replace musicians, but to create unique building blocks for experimental music.", cls="post-body"),
 
-        H2("Timeline", cls="post-h2"),
-        Ul(
-            Li(Strong("Feb 2026:"), " Starting experiments"),
-            Li(Strong("Jun 2026:"), " First working models"),
-            Li(Strong("Dec 2026:"), " Evaluate if this is viable"),
-            cls="post-list",
-        ),
-
-        H2("Contact", cls="post-h2"),
-        P("Built by Rafael Sacaan.", cls="post-body"),
     ]
     if request.headers.get("HX-Request"):
         return ContentArea(content, "About")

@@ -16,8 +16,9 @@ def NavBar(current_page="home"):
             A(Img(src=LOGO_PATH, alt="Munra Logo", cls="nav-logo"),
               href="/", hx_get="/", hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"),
             Div(
+                nav_link("Samples", "/samples", "samples"),
+                nav_link("Models", "/models", "models"),
                 nav_link("Experiments", "/blog", "blog"),
-                nav_link("Approach", "/approach", "approach"),
                 nav_link("About", "/about", "about"),
                 cls="nav-links",
             ),

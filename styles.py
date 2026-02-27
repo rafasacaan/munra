@@ -91,20 +91,19 @@ GLOBAL_STYLES = f"""
         background: {HERO_BG};
     }}
     .hero-content {{
-        max-width: var(--site-max-width);
         width: 100%;
-        margin: 0 auto;
-        padding: 40px var(--site-margin);
+        padding: 0;
     }}
     .hero-video-wrap {{
         position: relative;
         width: 100%;
+        height: 100vh;
         overflow: hidden;
     }}
     .hero-video {{
         width: 100%;
+        height: 100%;
         display: block;
-        aspect-ratio: 16/9;
         object-fit: cover;
     }}
     .hero-overlay {{
@@ -117,13 +116,21 @@ GLOBAL_STYLES = f"""
         inset: 0;
         display: flex;
         flex-direction: column;
-        justify-content: flex-end;
-        padding: 48px;
+        justify-content: flex-start;
+        padding: calc({NAVBAR_HEIGHT} + 15vh) 0 0;
+    }}
+    .hero-text-inner {{
+        width: 100%;
+        max-width: var(--site-max-width);
+        margin: 0 auto;
+        padding: 0 var(--site-margin);
+        display: flex;
+        flex-direction: column;
         gap: 28px;
     }}
     .hero-eyebrow {{
         font-family: {FONT_MONO};
-        font-size: 11px;
+        font-size: 15px;
         font-weight: 400;
         letter-spacing: 0.12em;
         text-transform: uppercase;
@@ -133,10 +140,10 @@ GLOBAL_STYLES = f"""
     }}
     .hero-title {{
         font-family: {FONT_HEADING};
-        font-size: 75px;
-        font-weight: 700;
-        line-height: 0.95;
-        letter-spacing: -0.03em;
+        font-size: 48px;
+        font-weight: 300;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
         color: {HERO_TEXT};
         display: block;
     }}
@@ -301,34 +308,111 @@ GLOBAL_STYLES = f"""
 
     /* --- Placeholder text --- */
     .text-placeholder {{ font-size: 17px; font-weight: 400; color: {COLOR_TEXT}; }}
-    .wip-badge {{
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
+
+    /* --- About video --- */
+    .about-video {{
+        display: block;
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        margin: 32px 0 40px 0;
+    }}
+
+    /* --- Produce cards --- */
+    .produce-grid {{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin: 24px 0 40px 0;
+    }}
+    .produce-card {{
+        background: #1E1C1A;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }}
+    .produce-card-title {{
+        font-family: {FONT_HEADING};
+        font-size: 17px;
+        font-weight: 600;
+        color: #FFFFFF;
+        margin: 0;
+        letter-spacing: -0.01em;
+    }}
+    .produce-card-desc {{
+        font-size: 15px;
+        color: rgba(255,255,255,0.55);
+        margin: 0;
+        line-height: 1.55;
+        flex: 1;
+    }}
+    .produce-card-status {{
         font-family: {FONT_MONO};
         font-size: 11px;
-        font-weight: 400;
-        letter-spacing: 0.1em;
         text-transform: uppercase;
-        color: {COLOR_TEXT_SEC};
-        background: {COLOR_SURFACE};
-        border: 1px solid {COLOR_BORDER};
-        padding: 6px 14px;
-        border-radius: 100px;
+        letter-spacing: 0.08em;
+        color: rgba(255,255,255,0.35);
+        margin: 0;
     }}
-    .wip-badge::before {{
-        content: '';
-        display: inline-block;
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: {COLOR_TEXT_SEC};
-        animation: wip-pulse 2s ease-in-out infinite;
-        flex-shrink: 0;
+
+    /* --- Machines image grid --- */
+    .machines-grid {{
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin: 24px 0 40px 0;
     }}
-    @keyframes wip-pulse {{
-        0%, 100% {{ opacity: 1; }}
-        50% {{ opacity: 0.2; }}
+    .machines-grid-item {{
+        aspect-ratio: 1/1;
+        overflow: hidden;
+    }}
+    .machines-grid-item img {{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: opacity 0.2s;
+    }}
+    .machines-grid-item img:hover {{ opacity: 0.85; }}
+
+    /* --- Home intro two-column --- */
+    .home-intro {{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: start;
+        margin-bottom: 40px;
+    }}
+    .home-intro-text .post-body {{ margin-bottom: 16px; }}
+    .stat-grid {{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }}
+    .stat-badge {{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-family: {FONT_MONO};
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        padding: 12px 0;
+        border-bottom: 3px solid {COLOR_TEXT};
+    }}
+    .stat-label {{ color: {COLOR_TEXT_SEC}; }}
+    .stat-value {{ color: {COLOR_TEXT}; font-weight: 600; }}
+
+    /* --- Highlighter --- */
+    .highlighter {{
+        display: inline;
+        background: {COLOR_TEXT};
+        color: {COLOR_BG};
+        padding: 1px 5px;
     }}
 
     /* --- Links --- */
@@ -337,6 +421,9 @@ GLOBAL_STYLES = f"""
 
     /* --- Responsive: tablet --- */
     @media (max-width: 768px) {{
+        .home-intro {{ grid-template-columns: 1fr; gap: 32px; }}
+        .machines-grid {{ grid-template-columns: repeat(3, 1fr); }}
+        .produce-grid {{ grid-template-columns: repeat(2, 1fr); }}
         html, body {{ overflow-x: hidden; }}
         h1 {{ font-size: 36px; }}
         h2 {{ font-size: 28px; }}
@@ -345,12 +432,14 @@ GLOBAL_STYLES = f"""
         .nav-links a {{ font-size: 14px !important; }}
         .hero-content {{ padding: 24px var(--site-margin); }}
         .hero-text {{ padding: 32px; gap: 20px; }}
-        .hero-title {{ font-size: 48px !important; }}
+        .hero-title {{ font-size: 36px !important; }}
         .post-code {{ padding: 16px; font-size: 12px; }}
     }}
 
     /* --- Responsive: phone --- */
     @media (max-width: 480px) {{
+        .machines-grid {{ grid-template-columns: repeat(2, 1fr); }}
+        .produce-grid {{ grid-template-columns: 1fr; }}
         h1 {{ font-size: 28px !important; }}
         h2 {{ font-size: 22px !important; }}
         .nav-logo {{ height: 36px; }}
@@ -359,7 +448,7 @@ GLOBAL_STYLES = f"""
         .hero-content {{ padding: 16px var(--site-margin); }}
         .hero-video {{ aspect-ratio: 4/3; }}
         .hero-text {{ padding: 20px; gap: 16px; }}
-        .hero-title {{ font-size: 28px !important; line-height: 1.0 !important; }}
+        .hero-title {{ font-size: 22px !important; line-height: 1.1 !important; }}
         .hero-bottom {{ flex-direction: column; align-items: flex-start; gap: 16px; }}
         .hero-cta-group {{ gap: 16px; }}
         .post-code {{ padding: 12px; font-size: 11px; }}
