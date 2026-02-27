@@ -41,7 +41,7 @@ def render_post_body(body):
                     alt, src = img_match.group(1), img_match.group(2)
                     elements.append(
                         Div(
-                            Img(src=src, alt=alt, cls="post-img"),
+                            Img(src=src, alt=alt, cls="post-img", loading="lazy"),
                             P(alt, cls="post-caption") if alt else "",
                             cls="post-figure",
                         )

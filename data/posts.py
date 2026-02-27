@@ -1,9 +1,11 @@
 """Functions for managing posts/notes data"""
 
 from pathlib import Path
+from functools import lru_cache
 from config import STATIC_NOTES_PATH
 
 
+@lru_cache(maxsize=1)
 def get_posts():
     """Get all posts from the notes directory"""
     notes_dir = Path(STATIC_NOTES_PATH)
