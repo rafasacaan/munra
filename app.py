@@ -136,10 +136,10 @@ def get(request):
         Div(
             *[Div(Img(src=f"/static/imgs/machines/{name}", alt=name.replace("machines-", "").replace(".jpg", ""), loading="lazy"), cls="machines-grid-item")
               for name in [
-                "machines-pedals.jpg", "machines-tascam-digi.jpg", "machines-808.jpg",
-                "machines-tascam-4track.jpg", "machines-walkmans.jpg", "machines-sony-1track.jpg",
-                "machines-cassettes.jpg", "machines-jhs.jpg", "machines-synths.jpg",
-                "machines-mics.jpg", "machines-keys.jpg",
+                "machines-pedals.webp", "machines-tascam-digi.webp", "machines-808.webp",
+                "machines-tascam-4track.webp", "machines-walkmans.webp", "machines-sony-1track.webp",
+                "machines-cassettes.webp", "machines-jhs.webp", "machines-synths.webp",
+                "machines-mics.webp", "machines-keys.webp",
               ]],
             cls="machines-grid",
         ),
