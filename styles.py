@@ -165,7 +165,7 @@ GLOBAL_STYLES = f"""
     }}
     .hero-cta {{
         font-family: {FONT_MONO};
-        font-size: 12px;
+        font-size: 16px;
         font-weight: 400;
         color: {HERO_TEXT};
         text-decoration: none;
@@ -173,7 +173,7 @@ GLOBAL_STYLES = f"""
         text-transform: uppercase;
         transition: color 0.2s;
     }}
-    .hero-cta:hover {{ color: {COLOR_ACCENT}; }}
+    .hero-cta:hover {{ color: #c15415; }}
 
     /* --- Section label (mono uppercase, replaces H2) --- */
     .section-label {{
@@ -402,7 +402,7 @@ GLOBAL_STYLES = f"""
         text-transform: uppercase;
         letter-spacing: 0.06em;
         padding: 12px 0;
-        border-bottom: 3px solid {COLOR_TEXT};
+        border-bottom: 1px solid {COLOR_BORDER};
     }}
     .stat-label {{ color: {COLOR_TEXT_SEC}; }}
     .stat-value {{ color: {COLOR_TEXT}; font-weight: 600; }}

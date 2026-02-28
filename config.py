@@ -7,7 +7,7 @@ SITE_URL = "https://munra.cl"
 
 # Copyright
 COPYRIGHT_YEAR = "2026"
-COPYRIGHT_TEXT = f"munra \u00a9 {COPYRIGHT_YEAR}"
+COPYRIGHT_TEXT = f"MUNRA \u00a9 {COPYRIGHT_YEAR}"
 
 # Layout
 NAVBAR_HEIGHT = "70px"
@@ -36,9 +36,9 @@ STATIC_NOTES_PATH = "static/notes"
 HERO_EYEBROW = "Building generative audio models for creative use"
 HERO_TITLE = "Training tiny models to generate drums, voice, and textures.<br>Publishing samples, models, and experiments."
 HERO_CTAS = [
-    ("Samples", "/samples"),
-    ("Modelos", "/models"),
     ("What we're learning", "/blog"),
+    ("Bandcamp", "https://munra.bandcamp.com"),
+    ("GitHub", "https://github.com/rafasacaan/munra-dev"),
 ]
 
 # Analytics

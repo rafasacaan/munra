@@ -1,7 +1,7 @@
 """Reusable UI components"""
 
 from fasthtml.common import *
-from config import LOGO_PATH, COPYRIGHT_TEXT, COLOR_TEXT_SEC
+from config import LOGO_PATH, COPYRIGHT_TEXT, COLOR_TEXT_SEC, COLOR_BORDER
 
 
 def NavBar(current_page="home"):
@@ -32,6 +32,14 @@ def Footer():
     """Footer component"""
     return Div(
         P(COPYRIGHT_TEXT, style=f"margin: 0; color: {COLOR_TEXT_SEC};"),
+        Div(
+            A("Bandcamp", href="https://munra.bandcamp.com", target="_blank", rel="noopener noreferrer",
+              style=f"color: {COLOR_TEXT_SEC}; text-decoration: none;"),
+            Span("·", style=f"color: {COLOR_BORDER}; margin: 0 0.5rem;"),
+            A("GitHub", href="https://github.com/rafasacaan/munra-dev", target="_blank", rel="noopener noreferrer",
+              style=f"color: {COLOR_TEXT_SEC}; text-decoration: none;"),
+            style="margin-top: 0.25rem;",
+        ),
         cls="footer"
     )
 
