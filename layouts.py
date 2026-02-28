@@ -22,11 +22,13 @@ def HeroSection(eyebrow="", title="", ctas=[]):
     if title:
         top.append(NotStr(f'<span class="hero-title">{title}</span>'))
 
-    cta_links = [
-        A(f"{text} →", href=href, cls="hero-cta",
-          hx_get=href, hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true")
-        for text, href in ctas
-    ]
+    cta_links = []
+    for text, href in ctas:
+        if href.startswith("http"):
+            cta_links.append(A(f"{text} →", href=href, cls="hero-cta", target="_blank", rel="noopener noreferrer"))
+        else:
+            cta_links.append(A(f"{text} →", href=href, cls="hero-cta",
+                               hx_get=href, hx_target="#content-area", hx_swap="innerHTML", hx_push_url="true"))
 
     bottom = Div(
         Div(*cta_links, cls="hero-cta-group"),
