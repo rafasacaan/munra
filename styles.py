@@ -147,6 +147,19 @@ GLOBAL_STYLES = f"""
         color: {HERO_TEXT};
         display: block;
     }}
+    .hero-update {{
+        display: block;
+        font-family: {FONT_MONO};
+        font-size: 16px;
+        color: {HERO_TEXT_SEC};
+        text-decoration: none;
+        margin: 16px 0 20px;
+        letter-spacing: 0.01em;
+        transition: color 0.2s;
+    }}
+    .hero-update:hover {{
+        color: {HERO_TEXT};
+    }}
     .hero-rule {{
         border: none;
         border-top: 1px solid rgba(0,0,0,0.12);
@@ -451,6 +464,7 @@ GLOBAL_STYLES = f"""
         .hero-title {{ font-size: 22px !important; line-height: 1.1 !important; }}
         .hero-bottom {{ flex-direction: column; align-items: flex-start; gap: 16px; }}
         .hero-cta-group {{ gap: 16px; }}
+        .hero-cta {{ font-size: 12px; }}
         .post-code {{ padding: 12px; font-size: 11px; }}
     }}
 """
