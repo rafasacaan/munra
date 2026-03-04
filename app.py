@@ -57,7 +57,7 @@ def get(request):
                     cls="home-intro-text",
                 ),
                 Div(
-                    Div(Span("Samples recorded", cls="stat-label"), Span("120", cls="stat-value"), cls="stat-badge"),
+                    Div(Span("Samples recorded", cls="stat-label"), Span("87", cls="stat-value"), cls="stat-badge"),
                     Div(Span("Models trained", cls="stat-label"), Span("0", cls="stat-value"), cls="stat-badge"),
                     Div(Span("Experiments", cls="stat-label"), Span("0", cls="stat-value"), cls="stat-badge"),
                     cls="stat-grid",

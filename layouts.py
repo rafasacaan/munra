@@ -35,6 +35,14 @@ def HeroSection(eyebrow="", title="", ctas=[]):
         cls="hero-bottom",
     )
 
+    update = A(
+        "● March 2026 / Just dropped: 87 kicks, snares & hi-hats from an 808 drum machine — listen on Bandcamp",
+        href="https://munra.bandcamp.com",
+        cls="hero-update",
+        target="_blank",
+        rel="noopener noreferrer",
+    )
+
     return Div(
         Div(
             Div(
@@ -43,6 +51,7 @@ def HeroSection(eyebrow="", title="", ctas=[]):
                 Div(
                     Div(
                         Div(*top, cls="hero-top"),
+                        update,
                         Div(Hr(cls="hero-rule"), bottom),
                         cls="hero-text-inner",
                     ),
